@@ -2,6 +2,7 @@
 
 Copyright (c) 2008 - 2012  John Reese - http://noswap.com  
 Copyright (c) 2012 - 2014  MantisBT Team - mantisbt-dev@lists.sourceforge.net
+Copyright (c) 2014 The Maker - https://github.com/make-all
 
 Released under the [MIT license](http://opensource.org/licenses/MIT)
 
@@ -35,6 +36,8 @@ plugins:
 * **SourceSVN**: SVN repositories locally accessible by the SVN binaries.
 * **SourceWebSVN**: SVN repositories accessible via a
   [WebSVN](http://www.websvn.info/) web frontend installation.
+* **SourcePhabricatorSVN**: SVN repositories accessible via a
+  [Phabricator](http://phabricator.org/) web frontend installation.
 
 Support for more source control tools should be rather
 straightforward to implement due to the flexibility inherent in the
@@ -114,13 +117,23 @@ directed to the MantisBT IRC channel #mantisbt on freenode:
   irc://freenode.net/mantisbt
 
 Bug reports or fixes are highly encouraged, and should be directed to
-the bug tracker on GitHub:
+the bug tracker on GitHub.
+
+For Phabricator backends, to
+
+  http://github.com/make-all/source-integration/issues
+
+or for other backends from the original project, to
 
   http://github.com/mantisbt-plugins/source-integration/issues
 
 The latest source code can be found on GitHub:
 
+  http://github.com/make-all/source-integration
+
   http://github.com/mantisbt-plugins/source-integration
+
+The latter may be more up to date for the non-Phabricator backends.
 
 Original project and documentation can be found on noswap.com:
 
