@@ -235,9 +235,14 @@ function Source_Process_Changesets( $p_changesets, $p_repo=null ) {
 		$p_changesets[ $t_key ] = Source_Parse_Users( $t_changeset );
 	}
 
-	# Parse normal bug links
+	# Parse normal bug links, excluding non-existing bugs
 	foreach( $p_changesets as $t_changeset ) {
-		$t_changeset->bugs = Source_Parse_Buglinks( $t_changeset->message );
+		$t_bugs = Source_Parse_Buglinks( $t_changeset->message );
+		foreach( $t_bugs as $t_bug_id ) {
+			if( bug_exists( $t_bug_id ) ) {
+				$t_changeset->bugs[] = $t_bug_id;
+			}
+		}
 	}
 
 	# Parse fixed bug links
@@ -247,8 +252,13 @@ function Source_Process_Changesets( $p_changesets, $p_repo=null ) {
 	foreach( $p_changesets as $t_changeset ) {
 		$t_bugs = Source_Parse_Bugfixes( $t_changeset->message );
 
-		foreach( $t_bugs as $t_bug_id ) {
-			$t_fixed_bugs[ $t_bug_id ] = $t_changeset;
+		foreach( $t_bugs as $t_key => $t_bug_id ) {
+			# Only process existing bugs
+			if( bug_exists( $t_bug_id ) ) {
+				$t_fixed_bugs[$t_bug_id] = $t_changeset;
+			} else {
+				unset( $t_bugs[$t_key] );
+			}
 		}
 
 		# Add the link to the normal set of buglinks
@@ -282,11 +292,6 @@ function Source_Process_Changesets( $p_changesets, $p_repo=null ) {
 
 	# Start fixing and/or resolving issues
 	foreach( $t_fixed_bugs as $t_bug_id => $t_changeset ) {
-
-		# make sure the bug exists before processing
-		if ( !bug_exists( $t_bug_id ) ) {
-			continue;
-		}
 
 		# fake the history entries as the committer/author user ID
 		$t_user_id = null;
@@ -416,10 +421,15 @@ function Source_Changeset_Link_Callback( $p_matches ) {
 		$t_repo = SourceRepo::load( $t_changeset->repo_id );
 		$t_vcs = SourceVCS::repo( $t_repo );
 
-		if ($t_url_type == "v") {
-			$t_url = $t_vcs->url_changeset( $t_repo, $t_changeset );
-		} else {
-			$t_url = plugin_page( 'view' ) . '&id=' . $t_changeset->id;
+		switch( $t_url_type ) {
+			case 'v':
+			case 'd':
+				$t_url = $t_vcs->url_changeset( $t_repo, $t_changeset );
+				break;
+			case 'c':
+			case 's':
+			default:
+				$t_url = plugin_page( 'view' ) . '&id=' . $t_changeset->id;
 		}
 
 		$t_name = string_display_line( $t_repo->name . ' ' . $t_vcs->show_changeset( $t_repo, $t_changeset ) );
