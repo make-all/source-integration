@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Copyright (c) 2012 John Reese
+# Licensed under the MIT license
+
+REV="$2"
+
+URL="http://localhost/mantisbt/plugin.php?page=Source/checkin"
+PROJECT="Repository Name"
+
+LOG_FILE=`mktemp /tmp/svn_${PROJECT}_${REV}_log.XXX`
+
+CURL=/usr/bin/curl
+
+${CURL} -d "repo_name=${PROJECT}" -d "data=${REV}" ${URL} >> ${LOG_FILE}
+

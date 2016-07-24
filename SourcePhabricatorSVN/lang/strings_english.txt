@@ -1,0 +1,15 @@
+<?php
+
+# Copyright (c) 2012 John Reese, 2014 Clarion Malaysia
+# Modified by Clarion to use Phabricator instead of WebSVN
+# Licensed under the MIT license
+
+$s_plugin_SourcePhabricatorSVN_ = '';
+$s_plugin_SourcePhabricatorSVN_title = 'Subversion / Phabricator Integration';
+$s_plugin_SourcePhabricatorSVN_description = 'Adds Subversion integration to the Source plugin framework using the Phabricator app.';
+
+$s_plugin_SourcePhabricatorSVN_svn = 'Phabricator';
+$s_plugin_SourcePhabricatorSVN_url = 'Phabricator URL<br/><span class="small">(With trailing slash)</span>';
+$s_plugin_SourcePhabricatorSVN_name = 'Phabricator Name<br/><span class="small">(Repository Callsign)</span>';
+$s_plugin_SourcePhabricatorSVN_path = 'Phabricator Path<br/><span class="small">(From repository root)</span>';
+
