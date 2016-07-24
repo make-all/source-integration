@@ -22,7 +22,7 @@ class SourcePhabricatorSVNPlugin extends SourceSVNPlugin {
 
 		$this->version = '0.02';
 		$this->requires = array(
-			'MantisCore' => '1.3.0',
+			'MantisCore' => '2.0.0',
 			'Source' => '0.16',
 			'SourceSVN' => '0.16',
 		);
@@ -115,27 +115,24 @@ class SourcePhabricatorSVNPlugin extends SourceSVNPlugin {
 		$t_path = $this->get_phabsvn_path( $p_repo );
 
 ?>
-<div class="field-container">
-    <label><span><?php echo plugin_lang_get( 'url' ) ?></span></label>
-    <span class="input">
+<tr>
+    <td class="category"><?php echo plugin_lang_get( 'url' ) ?></td>
+    <td>
         <input name="phabsvn_url" maxlength="250" size="40" value="<?php echo string_attribute( $t_url ) ?>"/>
-    </span>
-    <span class="label-style"></span>
-</div>
-<div class="field-container">
-    <label><span><?php echo plugin_lang_get( 'name' ) ?></span></label>
-    <span class="input">
+    </td>
+</tr>
+<tr>
+    <td class="category"><?php echo plugin_lang_get( 'name' ) ?></td>
+    <td>
         <input name="phabsvn_name" maxlength="250" size="40" value="<?php echo string_attribute( $t_name ) ?>"/>
-    </span>
-    <span class="label-style"></span>
-</div>
-<div class="field-container">
-    <label><span><?php echo plugin_lang_get( 'path' ) ?></span></label>
-    <span class="input">
+    </td>
+</tr>
+<tr>
+    <td class="category"><?php echo plugin_lang_get( 'path' ) ?></td>
+    <td>
         <input name="phabsvn_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_path ) ?>"/>
-    </span>
-    <span class="label-style"></span>
-</div>
+    </td>
+</tr>
 <?php
 
 		return parent::update_repo_form( $p_repo );
