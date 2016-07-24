@@ -17,12 +17,12 @@ if ( false === include_once( config_get( 'plugin_path' ) . 'SourceSVN/SourceSVN.
 
 class SourcePhabricatorSVNPlugin extends SourceSVNPlugin {
 	public function register() {
-		$this->name = lang_get( 'plugin_SourcePhabricatorSVN_title' );
-		$this->description = lang_get( 'plugin_SourcePhabricatorSVN_description' );
+		$this->name = plugin_lang_get( 'title' );
+		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '0.01';
+		$this->version = '0.02';
 		$this->requires = array(
-			'MantisCore' => '1.2.0',
+			'MantisCore' => '1.3.0',
 			'Source' => '0.16',
 			'SourceSVN' => '0.16',
 		);
@@ -35,7 +35,7 @@ class SourcePhabricatorSVNPlugin extends SourceSVNPlugin {
 	public $type = 'phabsvn';
 
 	public function show_type() {
-		return lang_get( 'plugin_SourcePhabricatorSVN_svn' );
+		return plugin_lang_get( 'svn' );
 	}
 
 	public function get_phabsvn_url( $p_repo ) {
@@ -115,16 +115,16 @@ class SourcePhabricatorSVNPlugin extends SourceSVNPlugin {
 		$t_path = $this->get_phabsvn_path( $p_repo );
 
 ?>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo lang_get( 'plugin_SourcePhabricatorSVN_url' ) ?></td>
+<tr>
+<td class="category"><?php echo plugin_lang_get( 'url' ) ?></td>
 <td><input name="phabsvn_url" maxlength="250" size="40" value="<?php echo string_attribute( $t_url ) ?>"/></td>
 </tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo lang_get( 'plugin_SourcePhabricatorSVN_name' ) ?></td>
+<tr>
+<td class="category"><?php echo plugin_lang_get( 'name' ) ?></td>
 <td><input name="phabsvn_name" maxlength="250" size="40" value="<?php echo string_attribute( $t_name ) ?>"/></td>
 </tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo lang_get( 'plugin_SourcePhabricatorSVN_path' ) ?></td>
+<tr>
+<td class="category"><?php echo plugin_lang_get( 'path' ) ?></td>
 <td><input name="phabsvn_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_path ) ?>"/></td>
 </tr>
 <?php
