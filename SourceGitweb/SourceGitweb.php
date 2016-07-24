@@ -14,7 +14,7 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '0.17';
+		$this->version = '0.18';
 		$this->requires = array(
 			'MantisCore' => '1.2.0',
 			'Source' => '0.16',
@@ -180,7 +180,7 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 			$t_query = "SELECT parent FROM $t_changeset_table
 				WHERE repo_id=" . db_param() . ' AND branch=' . db_param() .
 				'ORDER BY timestamp ASC';
-			$t_result = db_query_bound( $t_query, array( $p_repo->id, $t_branch ), 1 );
+			$t_result = db_query( $t_query, array( $p_repo->id, $t_branch ), 1 );
 
 			$t_commits = array( $t_branch );
 
@@ -227,10 +227,10 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 			$t_commit_url = $this->uri_base( $p_repo ) . 'a=commit;h=' . $t_fixed_id;
 			$t_input = url_get( $t_commit_url );
 
-			if ( false === $t_input ) {
+			if ( !$t_input ) {
 				echo "failed.\n";
-				echo "$t_commit_url\n"; # DEBUG
-				continue;
+				echo "'$t_commit_url' did not return any data.\n";
+				die();
 			}
 
 			list( $t_changeset, $t_commit_parents ) = $this->commit_changeset( $p_repo, $t_input, $p_branch );
@@ -250,11 +250,11 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 
 		$t_input = str_replace( array("\r", "\n", '&lt;', '&gt;', '&nbsp;'), array('', '', '<', '>', ' '), $p_input );
 
-		# Exract sections of commit data and changed files
+		# Extract sections of commit data and changed files
 		$t_input_p1 = strpos( $t_input, '<div class="title_text">' );
 		$t_input_p2 = strpos( $t_input, '<div class="list_head">' );
 		if ( false === $t_input_p1 || false === $t_input_p2 ) {
-			echo 'commit data failure.';
+			echo "commit data failure.\n";
 			var_dump( strlen( $t_input ), $t_input_p1, $t_input_p2 );
 			die();
 		}
@@ -309,7 +309,7 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 			# Parse for changed file data
 			$t_commit['files'] = array();
 
-			preg_match_all( '#class="list".*?h=(\w*)[^>]*>([^<]*)</a>(?:(?:</td><td><span class="file_status|[^%]*%) (\w*))?#',
+			preg_match_all( '#class="list".*?h=(\w*).*?>(.*?)<.a>(?:(?:<.td><td><span class="file_status| with \d*%) (\w*))?#',
 				$t_gitweb_files, $t_matches, PREG_SET_ORDER );
 
 			foreach( $t_matches as $t_file_matches ) {

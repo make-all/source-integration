@@ -129,8 +129,8 @@ class SourceHgWebPlugin extends MantisSourcePlugin {
 		# Once it reaches here it is decoded. Hence we split by a space
 		# were as the curl command uses a '+' character instead.
 		# i.e. DATA=`echo $INPUT | sed -e 's/ /+/g'`
-		list ( , $t_commit_id, $t_branch ) = split( ' ', $p_data );
-		list ( , , $t_branch ) = split( '/', $t_branch );
+		list ( , $t_commit_id, $t_branch ) = explode( ' ', $p_data );
+		list ( , , $t_branch ) = explode( '/', $t_branch );
 
 		return $this->import_commits($p_repo, null, $t_commit_id, $t_branch);
 	}
@@ -152,7 +152,7 @@ class SourceHgWebPlugin extends MantisSourcePlugin {
 			$t_query = "SELECT parent FROM $t_changeset_table
 				WHERE repo_id=" . db_param() . ' AND branch=' . db_param() .
 				'ORDER BY timestamp ASC';
-			$t_result = db_query_bound( $t_query, array( $p_repo->id, $t_branch ), 1 );
+			$t_result = db_query( $t_query, array( $p_repo->id, $t_branch ), 1 );
 
 			$t_commits = array( $t_branch );
 
