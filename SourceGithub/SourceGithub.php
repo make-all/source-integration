@@ -11,21 +11,26 @@ require_once( config_get( 'core_path' ) . 'json_api.php' );
 
 class SourceGithubPlugin extends MantisSourcePlugin {
 
+	const PLUGIN_VERSION = '1.3.1';
+	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+
 	const ERROR_INVALID_PRIMARY_BRANCH = 'invalid_branch';
+
+	public $linkPullRequest = '/pull/%s';
 
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '1.3.0';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.3.0',
-			'Source' => '1.3.0',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author = 'John Reese';
 		$this->contact = 'john@noswap.com';
-		$this->url = 'http://noswap.com';
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public function errors() {
@@ -166,13 +171,19 @@ class SourceGithubPlugin extends MantisSourcePlugin {
 <div class="field-container">
 	<label><span><?php echo plugin_lang_get( 'hub_app_access_token' ) ?></span></label>
 	<span class="input">
-		<?php if ( empty( $t_hub_app_client_id ) || empty( $t_hub_app_secret ) ):
-echo plugin_lang_get( 'hub_app_client_id_secret_missing' );
-elseif ( empty( $t_hub_app_access_token ) ):
-print_link( $this->oauth_authorize_uri( $p_repo ), plugin_lang_get( 'hub_app_authorize' ) );
-else:
-echo plugin_lang_get( 'hub_app_authorized' );
-endif; ?>
+		<?php
+		if( empty( $t_hub_app_client_id ) || empty( $t_hub_app_secret ) ) {
+			echo plugin_lang_get( 'hub_app_client_id_secret_missing' );
+		} elseif( empty( $t_hub_app_access_token ) ) {
+			print_link( $this->oauth_authorize_uri( $p_repo ), plugin_lang_get( 'hub_app_authorize' ) );
+		} else {
+			echo plugin_lang_get( 'hub_app_authorized' );
+			# @TODO This would be better with an AJAX, but this will do for now
+			?>
+			<input type="submit" name="revoke" value="<?php echo plugin_lang_get( 'hub_app_revoke' ) ?>"/>
+			<?php
+		}
+		?>
 	</span>
 	<span class="label-style"></span>
 </div>
@@ -188,6 +199,12 @@ endif; ?>
 	}
 
 	public function update_repo( $p_repo ) {
+		# Revoking previously authorized Github access token
+		if( gpc_isset( 'revoke' ) ) {
+			unset( $p_repo->info['hub_app_access_token'] );
+			return $p_repo;
+		}
+
 		$f_hub_username = gpc_get_string( 'hub_username' );
 		$f_hub_reponame = gpc_get_string( 'hub_reponame' );
 		$f_hub_app_client_id = gpc_get_string( 'hub_app_client_id' );
@@ -485,7 +502,9 @@ endif; ?>
 		}
 
 		if ( !empty( $t_access_token ) ) {
-			if ( $t_access_token != $p_repo->info['hub_app_access_token'] ) {
+			if( !array_key_exists( 'hub_app_access_token', $p_repo->info )
+				|| $t_access_token != $p_repo->info['hub_app_access_token']
+			) {
 				$p_repo->info['hub_app_access_token'] = $t_access_token;
 				$p_repo->save();
 			}

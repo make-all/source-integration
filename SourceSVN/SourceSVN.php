@@ -8,19 +8,23 @@ if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourceP
 }
 
 class SourceSVNPlugin extends MantisSourcePlugin {
+
+	const PLUGIN_VERSION = '1.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '0.19';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.3.0',
-			'Source' => '0.16',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author = 'John Reese';
 		$this->contact = 'john@noswap.com';
-		$this->url = 'http://noswap.com';
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public function config() {
@@ -172,7 +176,7 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 	<div class="field-container">
 		<label for="plugin_SourceSVN_svnssl"><span><?php echo plugin_lang_get( 'svnssl' ) ?></span></label>
 		<span class="checkbox">
-			<input name="plugin_SourceSVN_svnssl" type="checkbox" <?php check_checked( $t_svnssl ) ?>/>
+			<input name="plugin_SourceSVN_svnssl" type="checkbox" <?php check_checked( (bool)$t_svnssl ) ?>/>
 		</span>
 		<span class="label-style"></span>
 	</div>
@@ -180,7 +184,7 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 	<div class="field-container">
 		<label for="plugin_SourceSVN_winstart"><span><?php echo plugin_lang_get( 'winstart' ) ?></span></label>
 		<span class="checkbox">
-			<input name="plugin_SourceSVN_winstart" type="checkbox" <?php check_checked( $t_winstart ) ?>/>
+			<input name="plugin_SourceSVN_winstart" type="checkbox" <?php check_checked( (bool)$t_winstart ) ?>/>
 		</span>
 		<span class="label-style"></span>
 	</div>
@@ -313,6 +317,8 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 		if ( is_null( $s_call ) ) {
 			$s_call = self::svn_binary() . ' --non-interactive';
 
+			plugin_push_current( 'SourceSVN' );
+
 			if ( plugin_config_get( 'svnssl', false ) ) {
 				$s_call .= ' --trust-server-cert';
 			}
@@ -321,6 +327,8 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 			if ( !is_blank( $t_svnargs ) ) {
 				$s_call .= " $t_svnargs";
 			}
+
+			plugin_pop_current();
 		}
 
 		# If not given a repo, just return the base SVN binary
