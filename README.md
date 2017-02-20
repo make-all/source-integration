@@ -1,7 +1,7 @@
 # Mantis Source Integration
 
 Copyright (c) 2008 - 2012  John Reese - http://noswap.com  
-Copyright (c) 2012 - 2014  MantisBT Team - mantisbt-dev@lists.sourceforge.net
+Copyright (c) 2012 - 2017  MantisBT Team - mantisbt-dev@lists.sourceforge.net
 Copyright (c) 2014 The Maker - https://github.com/make-all
 
 Released under the [MIT license](http://opensource.org/licenses/MIT)
@@ -25,6 +25,8 @@ plugins:
   [cgit](http://hjemli.net/git/cgit/) web frontend installation.
 * **SourceGithub**: Git repositories hosted on [GitHub](http://github.com/).
 * **SourceGitlab**: Git repositories hosted on [GitLab](https://about.gitlab.com/).
+* **SourceGitphp**: Git repositories accessible via a
+  [Gitphp](https://gitphp.org/) web frontend installation.
 * **SourceGitweb**: Git repositories accessible via a
   [GitWeb](https://git.wiki.kernel.org/index.php/Gitweb) web frontend
   installation.
@@ -41,7 +43,7 @@ plugins:
 * **SourcePhabricatorSVN**: SVN repositories accessible via a
   [Phabricator](http://phabricator.org/) web frontend installation.
 
-Support for more source control tools should be rather
+Support for additional source control tools should be rather
 straightforward to implement due to the flexibility inherent in the
 integration framework and API.
 
@@ -57,8 +59,24 @@ enforced as of 2013-04-24.
 
 ## Installation
 
-1. Download or clone a copy of the [Source Integration source
-   code](http://github.com/mantisbt-plugins/source-integration/).
+### Compatibility
+
+Depending on which version of MantisBT you are using, please make sure to
+get the source code from the appropriate branch in the Plugin's GitHub
+repository, as per the table below:
+
+MantisBT version | Branch | Notes
+:---:|---|---
+2.0.x | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream modern-ui
+1.3.x | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | ** Untested **, tracking upstream master
+1.2.x | [master](https://github.com/make-all/source-integration/archive/master.zip) | Legacy, tracking upstream master-1.2.x
+
+
+### Setup instructions
+
+1. Download the appropriate version (see [Compatibility section](#compatibility) above)
+   or clone a copy of the [source code](https://github.com/mantisbt-plugins/source-integration/)
+   and checkout the correct branch.
 
 2. Copy the primary Source plugin (the `Source/` directory) into your Mantis
    installation's `plugins/` directory.
@@ -117,40 +135,25 @@ enforced as of 2013-04-24.
 
     This will import new changesets for all configured repositories.
 
-11. Add additional repositories as needed.
-
 ## Support
 
-Problems or questions dealing with use and installation should be
-directed to the MantisBT IRC channel #mantisbt on freenode:
+The following support channels are available if you wish to file a
+[bug report](https://github.com/make-all/source-integration/issues/new),
+or have questions related to use and installation:
 
-  irc://freenode.net/mantisbt
+  - [GitHub issues tracker](http://github.com/make-all/source-integration/issues)
+  - Upstream [Gitter chat room](https://gitter.im/mantisbt-plugins/source-integration)
+  - If you feel lucky you may also want to try the legacy
+    [#mantisbt IRC channel](https://webchat.freenode.net/?channels=%23mantisbt)
+    on Freenode (irc://freenode.net/mantisbt)
+    but since hardly anyone goes there nowadays, you may not get any response.
 
-Bug reports or fixes are highly encouraged, and should be directed to
-the bug tracker on GitHub.
+All code contributions (bug fixes, new features and enhancements, additional
+VCS integration plugins) are welcome and highly encouraged, preferably as a
+[Pull Request](https://github.com/mantisbt-plugins/source-integration/compare).
 
-For Phabricator backends, to
+The latest source code is available on
+[GitHub](https://github.com/make-all/source-integration);
+John Reese's original project documentation can be found on his web site,
+[noswap.com](http://noswap.com/projects/source-integration/).
 
-  http://github.com/make-all/source-integration/issues
-
-or for other backends from the original project, to
-
-  http://github.com/mantisbt-plugins/source-integration/issues
-
-The latest source code can be found on GitHub:
-
-  http://github.com/make-all/source-integration
-
-  http://github.com/mantisbt-plugins/source-integration
-
-The latter may be more up to date for the non-Phabricator backends.
-
-Original project and documentation can be found on noswap.com:
-
-  http://noswap.com/projects/source-integration/
-
-## Compatibility
-
-- MantisBT 2.0.x - modern-ui branch
-- MantisBT 1.3.x - master-1.3.x branch
-- MantisBT 1.2.x - master branch
