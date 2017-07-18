@@ -1,7 +1,6 @@
 <?php
 
-# Copyright (c) 2012 John Reese, 2014 Clarion Malaysia
-# Modified by Clarion to use Phabricator instead of WebSVN
+# Copyright (c) 2012 John Reese, 2017 The Maker
 # Licensed under the MIT license
 
 $s_plugin_SourcePhabricatorSVN_ = '';
