@@ -15,19 +15,23 @@ if ( !defined('testing') ) {
 }
 
 class SourceCgitPlugin extends MantisSourcePlugin {
+
+	const PLUGIN_VERSION = '1.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '0.16';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.2.0',
-			'Source' => '0.16',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author = 'Alexander';
 		$this->contact = 'iam.asm89@gmail.com';
-		$this->url = 'http://noswap.com/';
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public $type = 'cgit';
@@ -75,8 +79,8 @@ class SourceCgitPlugin extends MantisSourcePlugin {
 	}
 
 	public function update_repo_form( $p_repo ) {
-		$t_gitweb_root = null;
-		$t_gitweb_project = null;
+		$t_cgit_root     = null;
+		$t_cgit_project  = null;
 
 		if ( isset( $p_repo->info['cgit_root'] ) ) {
 			$t_cgit_root = $p_repo->info['cgit_root'];
@@ -92,18 +96,31 @@ class SourceCgitPlugin extends MantisSourcePlugin {
 			$t_master_branch = 'master';
 		}
 ?>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'cgit_root' ) ?></td>
-<td><input name="cgit_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_root ) ?>"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'cgit_project' ) ?></td>
-<td><input name="cgit_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_project ) ?>"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'master_branch' ) ?></td>
-<td><input name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/></td>
-</tr>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'cgit_root' ) ?></span></label>
+	<span class="input">
+		<input name="cgit_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_root ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'cgit_project' ) ?></span></label>
+	<span class="input">
+		<input name="cgit_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_project ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'master_branch' ) ?></span></label>
+	<span class="input">
+		<input name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
 <?php
 	}
 
@@ -157,7 +174,7 @@ class SourceCgitPlugin extends MantisSourcePlugin {
 			$t_query = "SELECT parent FROM $t_changeset_table
 				WHERE repo_id=" . db_param() . ' AND branch=' . db_param() .
 				'ORDER BY timestamp ASC';
-			$t_result = db_query_bound( $t_query, array( $p_repo->id, $t_branch ), 1 );
+			$t_result = db_query( $t_query, array( $p_repo->id, $t_branch ), 1 );
 
 			$t_commits = array( $t_branch );
 
@@ -273,7 +290,11 @@ class SourceCgitPlugin extends MantisSourcePlugin {
 	 * @return string
 	 */
 	public function commit_message( $p_input ) {
-		preg_match( "#<div class='commit-subject'>(.*?)(<a class=|</div>)#", $p_input, $t_matches);
+		preg_match(
+			"#<div class='commit-subject'>(.*?)(<span class='decoration'>|<a class=|</div>)#",
+			$p_input,
+			$t_matches
+		);
 		$t_message = trim( str_replace( '<br/>', PHP_EOL, $t_matches[1] ) );
 
 		# Strip ref links and signoff spans from commit message

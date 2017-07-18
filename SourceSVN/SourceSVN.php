@@ -8,19 +8,23 @@ if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourceP
 }
 
 class SourceSVNPlugin extends MantisSourcePlugin {
+
+	const PLUGIN_VERSION = '1.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '0.19';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.2.0',
-			'Source' => '0.16',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author = 'John Reese';
 		$this->contact = 'john@noswap.com';
-		$this->url = 'http://noswap.com';
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public function config() {
@@ -72,34 +76,55 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 		$t_ignore_paths = isset( $p_repo->info['ignore_paths'] ) ? $p_repo->info['ignore_paths'] : '';
 
 ?>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'svn_username' ) ?></td>
-<td><input name="svn_username" maxlength="250" size="40" value="<?php echo string_attribute( $t_svn_username ) ?>"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'svn_password' ) ?></td>
-<td><input name="svn_password" maxlength="250" size="40" value="<?php echo string_attribute( $t_svn_password ) ?>"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'standard_repo' ) ?></td>
-<td><input name="standard_repo" type="checkbox" <?php echo ($t_standard_repo ? 'checked="checked"' : '') ?>/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'trunk_path' ) ?></td>
-<td><input name="trunk_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_trunk_path ) ?>"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'branch_path' ) ?></td>
-<td><input name="branch_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_branch_path ) ?>"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'tag_path' ) ?></td>
-<td><input name="tag_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_tag_path ) ?>"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'ignore_paths' ) ?></td>
-<td><input name="ignore_paths" type="checkbox" <?php echo ($t_ignore_paths ? 'checked="checked"' : '') ?>/></td>
-</tr>
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'svn_username' ) ?></span></label>
+	<span class="input">
+		<input name="svn_username" maxlength="250" size="40" value="<?php echo string_attribute( $t_svn_username ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'svn_password' ) ?></span></label>
+	<span class="input">
+		<input name="svn_password" maxlength="250" size="40" value="<?php echo string_attribute( $t_svn_password ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'standard_repo' ) ?></span></label>
+	<span class="input">
+		<input name="standard_repo" type="checkbox" <?php echo ($t_standard_repo ? 'checked="checked"' : '') ?>/>
+	</span>
+	<span class="label-style"></span>
+</div>
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'trunk_path' ) ?></span></label>
+	<span class="input">
+		<input name="trunk_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_trunk_path ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'branch_path' ) ?></span></label>
+	<span class="input">
+		<input name="branch_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_branch_path ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'tag_path' ) ?></span></label>
+	<span class="input">
+		<input name="tag_path" maxlength="250" size="40" value="<?php echo string_attribute( $t_tag_path ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'ignore_paths' ) ?></span></label>
+	<span class="input">
+		<input name="ignore_paths" type="checkbox" <?php echo ($t_ignore_paths ? 'checked="checked"' : '') ?>/>
+	</span>
+	<span class="label-style"></span>
+</div>
 <?php
 	}
 
@@ -128,22 +153,41 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 			$t_winstart = plugin_config_get( 'winstart', '' );
 
 ?>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'svnpath' ) ?></td>
-<td><input name="plugin_SourceSVN_svnpath" value="<?php echo string_attribute( $t_svnpath ) ?>" size="40"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'svnargs' ) ?></td>
-<td><input name="plugin_SourceSVN_svnargs" value="<?php echo string_attribute( $t_svnargs ) ?>" size="40"/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'svnssl' ) ?></td>
-<td><input name="plugin_SourceSVN_svnssl" type="checkbox" <?php if ( $t_svnssl ) echo 'checked="checked"' ?>/></td>
-</tr>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo plugin_lang_get( 'winstart' ) ?></td>
-<td><input name="plugin_SourceSVN_winstart" type="checkbox" <?php if ( $t_winstart ) echo 'checked="checked"' ?>/></td>
-</tr>
+	<legend>
+		<?php echo plugin_lang_get( 'title' );?>
+	</legend>
+
+	<div class="field-container">
+		<label for="plugin_SourceSVN_svnpath"><span><?php echo plugin_lang_get( 'svnpath' ) ?></span></label>
+		<span class="input">
+			<input name="plugin_SourceSVN_svnpath" value="<?php echo string_attribute( $t_svnpath ) ?>" size="40"/>
+		</span>
+		<span class="label-style"></span>
+	</div>
+
+	<div class="field-container">
+		<label for="plugin_SourceSVN_svnargs"><span><?php echo plugin_lang_get( 'svnargs' ) ?></span></label>
+		<span class="input">
+			<input name="plugin_SourceSVN_svnargs" value="<?php echo string_attribute( $t_svnargs ) ?>" size="40"/>
+		</span>
+		<span class="label-style"></span>
+	</div>
+
+	<div class="field-container">
+		<label for="plugin_SourceSVN_svnssl"><span><?php echo plugin_lang_get( 'svnssl' ) ?></span></label>
+		<span class="checkbox">
+			<input name="plugin_SourceSVN_svnssl" type="checkbox" <?php check_checked( (bool)$t_svnssl ) ?>/>
+		</span>
+		<span class="label-style"></span>
+	</div>
+
+	<div class="field-container">
+		<label for="plugin_SourceSVN_winstart"><span><?php echo plugin_lang_get( 'winstart' ) ?></span></label>
+		<span class="checkbox">
+			<input name="plugin_SourceSVN_winstart" type="checkbox" <?php check_checked( (bool)$t_winstart ) ?>/>
+		</span>
+		<span class="label-style"></span>
+	</div>
 <?php
 		}
 	}
@@ -215,7 +259,7 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 		$t_max_query = "SELECT revision FROM $t_changeset_table
 						WHERE repo_id=" . db_param() . '
 						ORDER BY CAST( revision AS DECIMAL ) DESC';
-		$t_db_revision = db_result( db_query_bound( $t_max_query, array( $p_repo->id ), 1 ) );
+		$t_db_revision = db_result( db_query( $t_max_query, array( $p_repo->id ), 1 ) );
 
 		$t_url = $p_repo->url;
 		$t_rev = ( false === $t_db_revision ? 0 : $t_db_revision + 1 );
@@ -273,6 +317,8 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 		if ( is_null( $s_call ) ) {
 			$s_call = self::svn_binary() . ' --non-interactive';
 
+			plugin_push_current( 'SourceSVN' );
+
 			if ( plugin_config_get( 'svnssl', false ) ) {
 				$s_call .= ' --trust-server-cert';
 			}
@@ -281,6 +327,8 @@ class SourceSVNPlugin extends MantisSourcePlugin {
 			if ( !is_blank( $t_svnargs ) ) {
 				$s_call .= " $t_svnargs";
 			}
+
+			plugin_pop_current();
 		}
 
 		# If not given a repo, just return the base SVN binary

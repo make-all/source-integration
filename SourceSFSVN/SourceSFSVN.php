@@ -8,20 +8,25 @@ if ( false === include_once( config_get( 'plugin_path' ) . 'SourceSVN/SourceSVN.
 }
 
 class SourceSFSVNPlugin extends SourceSVNPlugin {
+
+	const PLUGIN_VERSION = '1.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+	const SOURCESVN_VERSION_REQUIRED = '1.0';
+
 	public function register() {
 		$this->name = lang_get( 'plugin_SourceSFSVN_title' );
 		$this->description = lang_get( 'plugin_SourceSFSVN_description' );
 
-		$this->version = '0.16';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.2.0',
-			'Source' => '0.16',
-			'SourceSVN' => '0.16',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
+			'SourceSVN' => self::SOURCESVN_VERSION_REQUIRED,
 		);
 
 		$this->author = 'John Reese';
 		$this->contact = 'john@noswap.com';
-		$this->url = 'http://noswap.com';
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public $type = 'sfsvn';
@@ -70,10 +75,15 @@ class SourceSFSVNPlugin extends SourceSVNPlugin {
 		$t_sf_project = isset( $p_repo->info['sf_project'] ) ? $p_repo->info['sf_project'] : '';
 
 ?>
-<tr <?php echo helper_alternate_class() ?>>
-<td class="category"><?php echo lang_get( 'plugin_SourceSFSVN_sf_project' ) ?></td>
-<td><input name="sf_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_sf_project ) ?>"/></td>
-</tr>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'sf_project' ) ?></span></label>
+	<span class="input">
+		<input name="sf_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_sf_project ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
 <?php
 
 		return parent::update_repo_form( $p_repo );

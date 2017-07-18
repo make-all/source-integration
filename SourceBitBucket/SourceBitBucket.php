@@ -10,23 +10,29 @@ if( false === include_once(config_get( 'plugin_path' ) . 'Source/MantisSourcePlu
 require_once(config_get( 'core_path' ) . 'json_api.php');
 
 class SourceBitBucketPlugin extends MantisSourcePlugin {
+
+	const PLUGIN_VERSION = '1.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+
 	protected $main_url = "https://bitbucket.org/";
 	protected $api_url_10 = 'https://bitbucket.org/api/1.0/';
 	protected $api_url_20 = 'https://bitbucket.org/api/2.0/';
+
+	public $linkPullRequest = '/pull-request/%s';
 
 	public function register() {
 		$this->name        = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version  = '0.19';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.2.16',
-			'Source'     => '0.18',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source'     => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author  = 'Sergey Marchenko';
 		$this->contact = 'sergey@mzsl.ru';
-		$this->url     = 'http://zetabyte.ru';
+		$this->url     = 'https://github.com/mantisbt-plugins/source-integration/';
 
 	}
 
@@ -108,36 +114,52 @@ class SourceBitBucketPlugin extends MantisSourcePlugin {
 		} else {
 			$t_master_branch = 'master';
 		}
-		?>
-		<tr <?php echo helper_alternate_class() ?>>
-			<td class="category"><?php echo plugin_lang_get( 'bit_basic_login' ) ?></td>
-			<td><input name="bit_basic_login" maxlength="250" size="40"
-					   value="<?php echo string_attribute( $t_bit_basic_login ) ?>"/></td>
-		</tr>
-		<tr <?php echo helper_alternate_class() ?>>
-			<td class="category"><?php echo plugin_lang_get( 'bit_basic_pwd' ) ?></td>
-			<td><input type="password" name="bit_basic_pwd" maxlength="250" size="40"
-					   value="<?php echo string_attribute( $t_bit_basic_pwd ) ?>"/></td>
-		</tr>
-		<tr <?php echo helper_alternate_class() ?>>
-			<td class="category"><?php echo plugin_lang_get( 'bit_username' ) ?></td>
-			<td><input name="bit_username" maxlength="250" size="40"
-					   value="<?php echo string_attribute( $t_bit_username ) ?>"/></td>
-		</tr>
-		<tr <?php echo helper_alternate_class() ?>>
-			<td class="category"><?php echo plugin_lang_get( 'bit_reponame' ) ?></td>
-			<td><input name="bit_reponame" maxlength="250" size="40"
-					   value="<?php echo string_attribute( $t_bit_reponame ) ?>"/></td>
-		</tr>
-		<tr>
-			<td class="spacer"></td>
-		</tr>
-		<tr <?php echo helper_alternate_class() ?>>
-			<td class="category"><?php echo plugin_lang_get( 'master_branch' ) ?></td>
-			<td><input name="master_branch" maxlength="250" size="40"
-					   value="<?php echo string_attribute( $t_master_branch ) ?>"/></td>
-		</tr>
-	<?php
+
+?>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'bit_basic_login' ) ?></span></label>
+	<span class="input">
+		<input name="bit_basic_login" maxlength="250" size="40" value="<?php echo string_attribute( $t_bit_basic_login ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'bit_basic_pwd' ) ?></span></label>
+	<span class="input">
+		<input type="password" name="bit_basic_pwd" maxlength="250" size="40" value="<?php echo string_attribute( $t_bit_basic_pwd ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'bit_username' ) ?></span></label>
+	<span class="input">
+		<input name="bit_username" maxlength="250" size="40" value="<?php echo string_attribute( $t_bit_username ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'bit_reponame' ) ?></span></label>
+	<span class="input">
+		<input name="bit_reponame" maxlength="250" size="40" value="<?php echo string_attribute( $t_bit_reponame ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
+<div class="spacer"></div>
+
+<div class="field-container">
+	<label><span><?php echo plugin_lang_get( 'master_branch' ) ?></span></label>
+	<span class="input">
+		<input name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
+	</span>
+	<span class="label-style"></span>
+</div>
+
+<?php
 	}
 
 	public function update_repo( $p_repo ) {
@@ -226,7 +248,7 @@ class SourceBitBucketPlugin extends MantisSourcePlugin {
 			$t_query  = "SELECT parent FROM $t_changeset_table
 				WHERE repo_id=" . db_param() . ' AND branch=' . db_param() .
 						' ORDER BY timestamp ASC';
-			$t_result = db_query_bound( $t_query, array($p_repo->id, $t_branch), 1 );
+			$t_result = db_query( $t_query, array($p_repo->id, $t_branch), 1 );
 
 			$t_commits = array($t_branch);
 
@@ -414,4 +436,5 @@ class SourceBitBucketPlugin extends MantisSourcePlugin {
 		$t_url = escapeshellarg( $p_url ); //use -u user:pass
 		return shell_exec( 'curl -u ' . $t_user_pass . ' ' . $t_url );
 	}
+
 }

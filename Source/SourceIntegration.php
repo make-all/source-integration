@@ -3,10 +3,15 @@
 # Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
-final class SourceIntegrationPlugin extends MantisPlugin {
+/**
+ * Class SourceIntegrationPlugin
+ *
+ * Child plugin handling the framework's integration with the MantisBT UI
+ */
+final class SourceIntegrationPlugin extends MantisSourceBase {
 	function register() {
 		$this->name = plugin_lang_get( 'title', 'Source' );
-		$this->version = SourcePlugin::$framework_version;
+		$this->version = self::FRAMEWORK_VERSION;
 	}
 
 	function hooks() {
@@ -85,9 +90,12 @@ final class SourceIntegrationPlugin extends MantisPlugin {
 
 		$t_user = SourceUser::load( $p_user_id );
 
-		echo '<tr ', helper_alternate_class(), '><td class="category">', plugin_lang_get( 'vcs_username', 'Source' ),
-			'<input type="hidden" name="Source_vcs" value="1"/></td><td>',
-			'<input name="Source_vcs_username" value="', $t_user->username, '"/></td></tr>';
+		echo '<div class="field-container">'
+			. '<label for="Source_vcs_username"><span>' . plugin_lang_get( 'vcs_username', 'Source' ) . '</span></label>'
+			. '<span class="input"><input type="hidden" name="Source_vcs" value="1"/>'
+			. '<input name="Source_vcs_username" value="', $t_user->username, '"/></span>'
+			. '<span class="label-style"></span>'
+			. '</div>';
 	}
 
 	/**

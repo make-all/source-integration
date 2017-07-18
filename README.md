@@ -1,8 +1,10 @@
 # Mantis Source Integration
 
+[![Gitter](https://img.shields.io/gitter/room/mantisbt-plugins/source-integration.svg)](https://gitter.im/mantisbt-plugins/source-integration)
+
 Copyright (c) 2008 - 2012  John Reese - http://noswap.com  
 Copyright (c) 2012 - 2017  MantisBT Team - mantisbt-dev@lists.sourceforge.net
-Copyright (c) 2014 The Maker - https://github.com/make-all
+Copyright (c) 2014 - 2017  The Maker - https://github.com/make-all
 
 Released under the [MIT license](http://opensource.org/licenses/MIT)
 
@@ -49,33 +51,34 @@ integration framework and API.
 
 ## Requirements
 
-The Source Integration framework requires [Mantis](http://www.mantisbt.org/)
-version 1.2.0 or higher.
-
-The **SourceGithub** plugin requires Mantis 1.2.16.
-This is due to a new requirement in GitHub API v3
-([User Agent header is mandatory for all API requests](http://developer.github.com/changes/2013-04-24-user-agent-required/))
-enforced as of 2013-04-24.
+The Source Integration framework requires [MantisBT](http://www.mantisbt.org/)
+version **1.3.0** or higher.
 
 ## Installation
 
 ### Compatibility
 
+The Source Integration framework's version numbering follows
+[Semantic Versioning](http://semver.org/). Major version increments indicate a
+change in the minimum required MantisBT version.
+
 Depending on which version of MantisBT you are using, please make sure to
-get the source code from the appropriate branch in the Plugin's GitHub
-repository, as per the table below:
+get the appropriate version of the source code. 
+Use [release tags](https://github.com/mantisbt-plugins/source-integration/releases), 
+or the relevant branch in the Plugin's GitHub repository, as per the table below:
 
-MantisBT version | Branch | Notes
-:---:|---|---
-2.0.x | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream modern-ui
-1.3.x | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | ** Untested **, tracking upstream master
-1.2.x | [master](https://github.com/make-all/source-integration/archive/master.zip) | Legacy, tracking upstream master-1.2.x
+MantisBT version | Tags | Branch | Notes
+:---:|---|---|---
+2.0.x | v2.* | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream modern-ui
+1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | tracking upstream master-1.3.x
+1.2.x | v0.* | [master-1.2.x](https://github.com/make-all/source-integration/archive/master-1.2.x.zip) | Legacy, tracking upstream master-1.2.x
 
+master is tracking the latest tested version which is where the author will be maintaining the Phabricator backends. Currently this is 1.3.x. Pull requests are welcome for other branches, especially for newer branches.
 
 ### Setup instructions
 
 1. Download the appropriate version (see [Compatibility section](#compatibility) above)
-   or clone a copy of the [source code](https://github.com/mantisbt-plugins/source-integration/)
+   or clone a copy of the [source code](https://github.com/make-all/source-integration/)
    and checkout the correct branch.
 
 2. Copy the primary Source plugin (the `Source/` directory) into your Mantis
@@ -135,6 +138,8 @@ MantisBT version | Branch | Notes
 
     This will import new changesets for all configured repositories.
 
+11. Add additional repositories as needed.
+
 ## Support
 
 The following support channels are available if you wish to file a
@@ -150,10 +155,9 @@ or have questions related to use and installation:
 
 All code contributions (bug fixes, new features and enhancements, additional
 VCS integration plugins) are welcome and highly encouraged, preferably as a
-[Pull Request](https://github.com/mantisbt-plugins/source-integration/compare).
+[Pull Request](https://github.com/make-all/source-integration/compare).
 
 The latest source code is available on
 [GitHub](https://github.com/make-all/source-integration);
 John Reese's original project documentation can be found on his web site,
 [noswap.com](http://noswap.com/projects/source-integration/).
-
