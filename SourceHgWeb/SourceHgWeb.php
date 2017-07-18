@@ -160,7 +160,7 @@ class SourceHgWebPlugin extends MantisSourcePlugin {
 			$t_branch = 'default';
 		}
 
-		$t_branches = map( 'trim', explode( ',', $t_branch ) );
+		$t_branches = array_map( 'trim', explode( ',', $t_branch ) );
 		$t_changesets = array();
 
 		$t_changeset_table = plugin_table( 'changeset', 'Source' );
@@ -168,7 +168,7 @@ class SourceHgWebPlugin extends MantisSourcePlugin {
 		foreach( $t_branches as $t_branch ) {
 			$t_query = "SELECT parent FROM $t_changeset_table
 				WHERE repo_id=" . db_param() . ' AND branch=' . db_param() .
-				'ORDER BY timestamp ASC';
+				' ORDER BY timestamp ASC';
 			$t_result = db_query( $t_query, array( $p_repo->id, $t_branch ), 1 );
 
 			$t_commits = array( $t_branch );
