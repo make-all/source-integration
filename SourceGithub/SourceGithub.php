@@ -3,39 +3,32 @@
 # Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
-if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourcePlugin.class.php' ) ) {
+if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourceGitBasePlugin.class.php' ) ) {
 	return;
 }
 
 require_once( config_get( 'core_path' ) . 'json_api.php' );
 
-class SourceGithubPlugin extends MantisSourcePlugin {
+class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 
-	const ERROR_INVALID_PRIMARY_BRANCH = 'invalid_branch';
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
+
+	public $linkPullRequest = '/pull/%s';
 
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '1.3.0';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '2.0.0',
-			'Source' => '1.3.0',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author = 'John Reese';
 		$this->contact = 'john@noswap.com';
-		$this->url = 'http://noswap.com';
-	}
-
-	public function errors() {
-		$t_errors_list = array(
-			self::ERROR_INVALID_PRIMARY_BRANCH,
-		);
-		foreach( $t_errors_list as $t_error ) {
-			$t_errors[$t_error] = plugin_lang_get( 'error_' . $t_error );
-		}
-		return $t_errors;
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public $type = 'github';
@@ -200,9 +193,7 @@ class SourceGithubPlugin extends MantisSourcePlugin {
 		$f_hub_app_secret = gpc_get_string( 'hub_app_secret' );
 		$f_master_branch = gpc_get_string( 'master_branch' );
 
-		if ( !preg_match( '/^(\*|[a-zA-Z0-9_\., -]*)$/', $f_master_branch ) ) {
-			plugin_error( self::ERROR_INVALID_PRIMARY_BRANCH );
-		}
+		$this->validate_branch_list( $f_master_branch );
 
 		$p_repo->info['hub_username'] = $f_hub_username;
 		$p_repo->info['hub_reponame'] = $f_hub_reponame;
@@ -291,7 +282,7 @@ class SourceGithubPlugin extends MantisSourcePlugin {
 			$t_commits[] = $t_commit['id'];
 		}
 
-		$t_refData = explode( '/',$p_data['ref'] );
+		$t_refData = explode( '/', $p_data['ref'], 3 );
 		$t_branch = $t_refData[2];
 
 		return $this->import_commits( $p_repo, $t_commits, $t_branch );

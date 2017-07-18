@@ -7,27 +7,31 @@
 # Licensed under the MIT license
 
 if ( !defined('testing') ) {
-	if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourcePlugin.class.php' ) ) {
+	if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourceGitBasePlugin.class.php' ) ) {
 		return;
 	}
 
 	require_once( config_get( 'core_path' ) . 'url_api.php' );
 }
 
-class SourceCgitPlugin extends MantisSourcePlugin {
+class SourceCgitPlugin extends MantisSourceGitBasePlugin {
+
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
+
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '0.16';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '2.0.0',
-			'Source' => '0.16',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author = 'Alexander';
 		$this->contact = 'iam.asm89@gmail.com';
-		$this->url = 'http://noswap.com/';
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public $type = 'cgit';
@@ -117,6 +121,8 @@ class SourceCgitPlugin extends MantisSourcePlugin {
 		$f_cgit_root = gpc_get_string( 'cgit_root' );
 		$f_cgit_project = gpc_get_string( 'cgit_project' );
 		$f_master_branch = gpc_get_string( 'master_branch' );
+
+		$this->validate_branch_list( $f_master_branch );
 
 		$p_repo->info['cgit_root'] = $f_cgit_root;
 		$p_repo->info['cgit_project'] = $f_cgit_project;
@@ -279,7 +285,11 @@ class SourceCgitPlugin extends MantisSourcePlugin {
 	 * @return string
 	 */
 	public function commit_message( $p_input ) {
-		preg_match( "#<div class='commit-subject'>(.*?)(<a class=|</div>)#", $p_input, $t_matches);
+		preg_match(
+			"#<div class='commit-subject'>(.*?)(<span class='decoration'>|<a class=|</div>)#",
+			$p_input,
+			$t_matches
+		);
 		$t_message = trim( str_replace( '<br/>', PHP_EOL, $t_matches[1] ) );
 
 		# Strip ref links and signoff spans from commit message

@@ -3,8 +3,8 @@
 [![Gitter](https://img.shields.io/gitter/room/mantisbt-plugins/source-integration.svg)](https://gitter.im/mantisbt-plugins/source-integration)
 
 Copyright (c) 2008 - 2012  John Reese - http://noswap.com  
-Copyright (c) 2012 - 2016  MantisBT Team - mantisbt-dev@lists.sourceforge.net
-Copyright (c) 2014 The Maker - https://github.com/make-all
+Copyright (c) 2012 - 2017  MantisBT Team - mantisbt-dev@lists.sourceforge.net
+Copyright (c) 2014 - 2017  The Maker - https://github.com/make-all
 
 Released under the [MIT license](http://opensource.org/licenses/MIT)
 
@@ -27,6 +27,8 @@ plugins:
   [cgit](http://hjemli.net/git/cgit/) web frontend installation.
 * **SourceGithub**: Git repositories hosted on [GitHub](http://github.com/).
 * **SourceGitlab**: Git repositories hosted on [GitLab](https://about.gitlab.com/).
+* **SourceGitphp**: Git repositories accessible via a
+  [Gitphp](https://gitphp.org/) web frontend installation.
 * **SourceGitweb**: Git repositories accessible via a
   [GitWeb](https://git.wiki.kernel.org/index.php/Gitweb) web frontend
   installation.
@@ -50,21 +52,26 @@ integration framework and API.
 ## Requirements
 
 The Source Integration framework requires [MantisBT](http://www.mantisbt.org/)
-version **1.3.0** or higher.
+version **2.0.0** or higher.
 
 ## Installation
 
 ### Compatibility
 
-Depending on which version of MantisBT you are using, please make sure to
-get the source code from the appropriate branch in the Plugin's GitHub
-repository, as per the table below:
+The Source Integration framework's version numbering follows
+[Semantic Versioning](http://semver.org/). Major version increments indicate a
+change in the minimum required MantisBT version.
 
-MantisBT version | Branch | Notes
+Depending on which version of MantisBT you are using, please make sure to
+get the appropriate version of the source code. 
+Use [release tags](https://github.com/mantisbt-plugins/source-integration/releases), 
+or the relevant branch in the Plugin's GitHub repository, as per the table below:
+
+MantisBT version | Tags | Branch | Notes
 :---:|---|---
-2.0.x | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **
-1.3.x | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | ** Untested **
-1.2.x | [master](https://github.com/make-all/source-integration/archive/master-1.2.x.zip) | Legacy
+2.0.x | v2.* | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream master
+1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | Tracking upstream master-1.3.x maintenance
+1.2.x | v0.* | [master-1.2.x](https://github.com/make-all/source-integration/archive/master-1.2.x.zip) | Legacy, tracking upstream master-1.2.x maintenance
 
 
 ### Setup instructions
@@ -147,7 +154,7 @@ or have questions related to use and installation:
 
 All code contributions (bug fixes, new features and enhancements, additional
 VCS integration plugins) are welcome and highly encouraged, preferably as a
-[Pull Request](https://github.com/mantisbt-plugins/source-integration/compare).
+[Pull Request](https://github.com/make-all/source-integration/compare).
 
 The latest source code is available on
 [GitHub](https://github.com/make-all/source-integration);

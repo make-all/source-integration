@@ -4,40 +4,31 @@
 # Copyright (c) 2014 Bob Clough
 # Licensed under the MIT license
 
-if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourcePlugin.class.php' ) ) {
+if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourceGitBasePlugin.class.php' ) ) {
 	return;
 }
 
 require_once( config_get( 'core_path' ) . 'url_api.php' );
 require_once( config_get( 'core_path' ) . 'json_api.php' );
 
-class SourceGitlabPlugin extends MantisSourcePlugin {
+class SourceGitlabPlugin extends MantisSourceGitBasePlugin {
 
-	const ERROR_INVALID_PRIMARY_BRANCH = 'invalid_branch';
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
 		$this->description = plugin_lang_get( 'description' );
 
-		$this->version = '1.0.4';
+		$this->version = self::PLUGIN_VERSION;
 		$this->requires = array(
-			'MantisCore' => '2.0.0',
-			'Source' => '1.3.0',
+			'MantisCore' => self::MANTIS_VERSION,
+			'Source' => self::FRAMEWORK_VERSION_REQUIRED,
 		);
 
 		$this->author = 'Johannes Goehr';
 		$this->contact = 'johannes.goehr@mobilexag.de';
-		$this->url = 'http://www.mobilexag.de';
-	}
-
-	public function errors() {
-		$t_errors_list = array(
-			self::ERROR_INVALID_PRIMARY_BRANCH,
-		);
-		foreach( $t_errors_list as $t_error ) {
-			$t_errors[$t_error] = plugin_lang_get( 'error_' . $t_error );
-		}
-		return $t_errors;
+		$this->url = 'https://github.com/mantisbt-plugins/source-integration/';
 	}
 
 	public $type = 'gitlab';
@@ -179,11 +170,9 @@ public function update_repo_form( $p_repo ) {
 				}
 			}
 		}
-		$f_master_branch = gpc_get_string( 'master_branch' );
 
-		if ( !preg_match( '/^(\*|[a-zA-Z0-9_\., -]*)$/', $f_master_branch ) ) {
-			plugin_error( self::ERROR_INVALID_PRIMARY_BRANCH );
-		}
+		$f_master_branch = gpc_get_string( 'master_branch' );
+		$this->validate_branch_list( $f_master_branch );
 
 		# Update other fields
 		$p_repo->info['hub_repoid'] = $f_hub_repoid;
