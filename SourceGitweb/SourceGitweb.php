@@ -11,7 +11,7 @@ require_once( config_get( 'core_path' ) . 'url_api.php' );
 
 class SourceGitwebPlugin extends MantisSourceGitBasePlugin {
 
-	const PLUGIN_VERSION = '2.0.0';
+	const PLUGIN_VERSION = '2.0.1';
 	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 
 	public function register() {
@@ -31,14 +31,12 @@ class SourceGitwebPlugin extends MantisSourceGitBasePlugin {
 
 	public $type = 'gitweb';
 
-	public function url_get_auth($url, $user, $pass) {
-		if (strlen($user) > 0 && strlen($pass) > 0) {
-			$urlParts = preg_split("/:\\/\\//", $url);
-			$urlWithCredentials = $urlParts[0] . "://" . $user . ":" . $pass . "@" .$urlParts[1];
-			return file_get_contents($urlWithCredentials);
-		} else {
-			return url_get($url);
+	public function url_get_auth( $p_url, $p_user, $p_pass ) {
+		if( strlen( $p_user ) > 0 && strlen( $p_pass ) > 0 ) {
+			$t_url_parts = preg_split("/:\\/\\//", $p_url );
+			$p_url = $t_url_parts[0] . "://" . $p_user . ":" . $p_pass . "@" .$t_url_parts[1];
 		}
+		return url_get( $p_url );
 	}
 
 	public function show_type() {

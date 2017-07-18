@@ -19,7 +19,7 @@ require_once( config_get( 'core_path' ) . 'url_api.php' );
 
 class SourceHgWebPlugin extends MantisSourcePlugin {
 
-	const PLUGIN_VERSION = '2.0.0';
+	const PLUGIN_VERSION = '2.0.1';
 	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 
 	function register() {
@@ -153,7 +153,7 @@ class SourceHgWebPlugin extends MantisSourcePlugin {
 			$t_branch = 'default';
 		}
 
-		$t_branches = map( 'trim', explode( ',', $t_branch ) );
+		$t_branches = array_map( 'trim', explode( ',', $t_branch ) );
 		$t_changesets = array();
 
 		$t_changeset_table = plugin_table( 'changeset', 'Source' );
