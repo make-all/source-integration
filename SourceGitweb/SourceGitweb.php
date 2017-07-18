@@ -3,16 +3,16 @@
 # Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
-if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourcePlugin.class.php' ) ) {
+if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourceGitBasePlugin.class.php' ) ) {
 	return;
 }
 
 require_once( config_get( 'core_path' ) . 'url_api.php' );
 
-class SourceGitwebPlugin extends MantisSourcePlugin {
+class SourceGitwebPlugin extends MantisSourceGitBasePlugin {
 
-	const PLUGIN_VERSION = '1.0.0';
-	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+	const PLUGIN_VERSION = '1.1.0';
+	const FRAMEWORK_VERSION_REQUIRED = '1.5.0';
 
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
@@ -159,6 +159,8 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 		$f_gitweb_pass = gpc_get_string( 'gitweb_pass' );
 		$f_master_branch = gpc_get_string( 'master_branch' );
 
+		$this->validate_branch_list( $f_master_branch );
+
 		$p_repo->info['gitweb_root'] = $f_gitweb_root;
 		$p_repo->info['gitweb_project'] = $f_gitweb_project;
 		$p_repo->info['gitweb_user'] = $f_gitweb_user;
@@ -236,7 +238,7 @@ class SourceGitwebPlugin extends MantisSourcePlugin {
 		foreach( $t_branches as $t_branch ) {
 			$t_query = "SELECT parent FROM $t_changeset_table
 				WHERE repo_id=" . db_param() . ' AND branch=' . db_param() .
-				'ORDER BY timestamp ASC';
+				' ORDER BY timestamp ASC';
 			$t_result = db_query( $t_query, array( $p_repo->id, $t_branch ), 1 );
 
 			$t_commits = array( $t_branch );
