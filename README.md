@@ -63,15 +63,15 @@ The Source Integration framework's version numbering follows
 change in the minimum required MantisBT version.
 
 Depending on which version of MantisBT you are using, please make sure to
-get the appropriate version of the source code. 
-Use [release tags](https://github.com/mantisbt-plugins/source-integration/releases), 
+get the appropriate version of the source code.
+Use [release tags](https://github.com/mantisbt-plugins/source-integration/releases),
 or the relevant branch in the Plugin's GitHub repository, as per the table below:
 
 MantisBT version | Tags | Branch | Notes
 :---:|---|---|---
-2.0.x | v2.* | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream modern-ui
-1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | ** Untested **, tracking upstream master
-1.2.x | v0.* | [master](https://github.com/make-all/source-integration/archive/master.zip) | Legacy, tracking upstream master-1.2.x
+2.0.x | v2.* | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream master
+1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | Tracking upstream master-1.3.x
+1.2.x | v0.* | [master-1.2.x](https://github.com/make-all/source-integration/archive/master.zip) | Legacy, tracking upstream master-1.2.x
 
 
 ### Setup instructions
