@@ -67,7 +67,7 @@ repository, as per the table below:
 
 MantisBT version | Branch | Notes
 :---:|---|---
-2.0.x | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream modern-ui
+2.0.x | [master](https://github.com/make-all/source-integration/archive/master.zip) | Tracking upstream master
 1.3.x | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | ** Untested **, tracking upstream master
 1.2.x | [master](https://github.com/make-all/source-integration/archive/master.zip) | Legacy, tracking upstream master-1.2.x
 
