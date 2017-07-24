@@ -13,7 +13,8 @@ $t_changeset = SourceChangeset::load( $f_changeset_id );
 
 $t_repos = SourceRepo::load_by_changesets( $t_changeset );
 if ( count( $t_repos ) < 1 ) {
-	trigger_error( ERROR_GENERIC, ERROR );
+	error_parameters( $f_changeset_id );
+	plugin_error( SourcePlugin::ERROR_REPO_MISSING_CHANGESET );
 }
 
 $t_repo = array_shift( $t_repos );
@@ -58,7 +59,7 @@ layout_page_begin();
 					<span class="select">
 						<select name="user_id">
 							<option value="0" <?php
-								echo check_selected( 0, (int)$t_changeset->user_id )
+								check_selected( 0, (int)$t_changeset->user_id )
 								?>>--</option>
 							<?php print_user_option_list( (int)$t_changeset->user_id ) ?>
 	
@@ -74,7 +75,7 @@ layout_page_begin();
 				<span class="select">
 					<select name="committer_id">
 						<option value="0" <?php
-							echo check_selected( 0, (int)$t_changeset->committer_id )
+							check_selected( 0, (int)$t_changeset->committer_id )
 							?>>--</option>
 						<?php print_assign_to_option_list( (int)$t_changeset->committer_id ) ?>
 
@@ -93,7 +94,7 @@ layout_page_begin();
 	if( $t_changeset->branch == "" ) {
 ?>
 						<option value="" <?php
-							echo check_selected( "", $t_changeset->branch )
+							check_selected( "", $t_changeset->branch )
 							?>>--</option>
 <?php
 	}
@@ -101,7 +102,7 @@ layout_page_begin();
 	foreach( $t_repo->branches as $t_branch ) {
 ?>
 						<option value="<?php echo string_attribute( $t_branch ) ?>" <?php
-							echo check_selected( $t_branch, $t_changeset->branch )
+							check_selected( $t_branch, $t_changeset->branch )
 						?>><?php
 							echo string_display_line( $t_branch )
 						?></option>
@@ -123,12 +124,12 @@ layout_page_begin();
 				<span class="select">
 					<select>
 						<option value="" <?php
-							echo check_selected( "", $t_changeset->ported )
+							check_selected( "", $t_changeset->ported )
 						?>><?php
 							echo plugin_lang_get( 'pending' )
 						?></option>
 						<option value="0" <?php
-							echo check_selected( "0", $t_changeset->ported )
+							check_selected( "0", $t_changeset->ported )
 						?>><?php
 							echo plugin_lang_get( 'na' )
 						?></option>
@@ -141,7 +142,7 @@ layout_page_begin();
 ?>
 						<option value="<?php
 							echo string_attribute( $t_branch ) ?>" <?php
-							echo check_selected( $t_branch, $t_changeset->ported )
+							check_selected( $t_branch, $t_changeset->ported )
 						?>><?php
 							echo string_display_line( $t_branch )
 						?></option>
@@ -181,5 +182,5 @@ layout_page_begin();
 
 
 <?php
-layout_page_end( __FILE__ );
+layout_page_end();
 

@@ -27,7 +27,8 @@ $t_affected_rowspan = count( $t_bug_rows ) + ( $t_can_update ? 1 : 0 );
 
 $t_repos = SourceRepo::load_by_changesets( $t_changeset );
 if ( count( $t_repos ) < 1 ) {
-	trigger_error( ERROR_GENERIC, ERROR );
+	error_parameters( $f_changeset_id );
+	plugin_error( SourcePlugin::ERROR_REPO_MISSING_CHANGESET );
 }
 
 $t_repo = array_shift( $t_repos );
@@ -108,11 +109,11 @@ layout_page_begin();
 <td class="center">
 <?php if ( $t_update_form ) { ?>
 <select name="ported">
-<option value="" <?php echo check_selected( "", $t_changeset->ported ) ?>><?php echo plugin_lang_get( 'pending' ) ?></option>
-<option value="0" <?php echo check_selected( "0", $t_changeset->ported ) ?>><?php echo plugin_lang_get( 'na' ) ?></option>
+<option value="" <?php check_selected( "", $t_changeset->ported ) ?>><?php echo plugin_lang_get( 'pending' ) ?></option>
+<option value="0" <?php check_selected( "0", $t_changeset->ported ) ?>><?php echo plugin_lang_get( 'na' ) ?></option>
 <option value="">--</option>
 <?php foreach( $t_repo->branches as $t_branch ) { if ( $t_branch == $t_changeset->branch ) { continue; } ?>
-<option value="<?php echo string_attribute( $t_branch ) ?>" <?php echo check_selected( $t_branch, $t_changeset->ported ) ?>><?php echo string_display_line( $t_branch ) ?></option>
+<option value="<?php echo string_attribute( $t_branch ) ?>" <?php check_selected( $t_branch, $t_changeset->ported ) ?>><?php echo string_display_line( $t_branch ) ?></option>
 <?php } ?>
 </select>
 <input type="submit" value="<?php echo plugin_lang_get( 'update' ) ?>"/>
@@ -209,5 +210,5 @@ if ( $t_can_update ) {
 </div>
 
 <?php
-layout_page_end( __FILE__ );
+layout_page_end();
 
