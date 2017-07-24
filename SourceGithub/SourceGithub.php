@@ -11,8 +11,8 @@ require_once( config_get( 'core_path' ) . 'json_api.php' );
 
 class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 
-	const PLUGIN_VERSION = '1.4.0';
-	const FRAMEWORK_VERSION_REQUIRED = '1.5.0';
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 
 	public $linkPullRequest = '/pull/%s';
 
@@ -123,42 +123,38 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 		}
 ?>
 
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'hub_username' ) ?></span></label>
-	<span class="input">
-		<input name="hub_username" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_username ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'hub_username' ) ?></td>
+	<td>
+		<input type="text" name="hub_username" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_username ) ?>"/>
+	</td>
+</tr>
 
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'hub_reponame' ) ?></span></label>
-	<span class="input">
-		<input name="hub_reponame" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_reponame ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'hub_reponame' ) ?></td>
+	<td>
+		<input type="text" name="hub_reponame" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_reponame ) ?>"/>
+	</td>
+</tr>
 
 
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'hub_app_client_id' ) ?></span></label>
-	<span class="input">
-		<input name="hub_app_client_id" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_app_client_id ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'hub_app_client_id' ) ?></td>
+	<td>
+		<input type="text" name="hub_app_client_id" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_app_client_id ) ?>"/>
+	</td>
+</tr>
 
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'hub_app_secret' ) ?></span></label>
-	<span class="input">
-		<input name="hub_app_secret" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_app_secret ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'hub_app_secret' ) ?></td>
+	<td>
+		<input type="text" name="hub_app_secret" maxlength="250" size="40" value="<?php echo string_attribute( $t_hub_app_secret ) ?>"/>
+	</td>
+</tr>
 
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'hub_app_access_token' ) ?></span></label>
-	<span class="input">
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'hub_app_access_token' ) ?></td>
+	<td>
 		<?php
 		if( empty( $t_hub_app_client_id ) || empty( $t_hub_app_secret ) ) {
 			echo plugin_lang_get( 'hub_app_client_id_secret_missing' );
@@ -168,21 +164,19 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 			echo plugin_lang_get( 'hub_app_authorized' );
 			# @TODO This would be better with an AJAX, but this will do for now
 			?>
-			<input type="submit" name="revoke" value="<?php echo plugin_lang_get( 'hub_app_revoke' ) ?>"/>
+			<input type="submit" class="btn btn-xs btn-primary btn-white btn-round" name="revoke" value="<?php echo plugin_lang_get( 'hub_app_revoke' ) ?>"/>
 			<?php
 		}
 		?>
-	</span>
-	<span class="label-style"></span>
-</div>
+	</td>
+</tr>
 
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'master_branch' ) ?></span></label>
-	<span class="input">
-		<input name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'master_branch' ) ?></td>
+	<td>
+		<input type="text" name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
+	</td>
+</tr>
 <?php
 	}
 

@@ -9,9 +9,9 @@ if ( false === include_once( config_get( 'plugin_path' ) . 'SourceSVN/SourceSVN.
 
 class SourceSFSVNPlugin extends SourceSVNPlugin {
 
-	const PLUGIN_VERSION = '1.0.0';
-	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
-	const SOURCESVN_VERSION_REQUIRED = '1.0';
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
+	const SOURCESVN_VERSION_REQUIRED = '2.0.0';
 
 	public function register() {
 		$this->name = lang_get( 'plugin_SourceSFSVN_title' );
@@ -75,15 +75,12 @@ class SourceSFSVNPlugin extends SourceSVNPlugin {
 		$t_sf_project = isset( $p_repo->info['sf_project'] ) ? $p_repo->info['sf_project'] : '';
 
 ?>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'sf_project' ) ?></span></label>
-	<span class="input">
-		<input name="sf_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_sf_project ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
+<tr>
+	<td class="category"><?php echo lang_get( 'plugin_SourceSFSVN_sf_project' ) ?></td>
+	<td>
+		<input type="text" name="sf_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_sf_project ) ?>"/>
+	</td>
+</tr>
 <?php
 
 		return parent::update_repo_form( $p_repo );

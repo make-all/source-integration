@@ -19,8 +19,8 @@ require_once( config_get( 'core_path' ) . 'url_api.php' );
 
 class SourceHgWebPlugin extends MantisSourcePlugin {
 
-	const PLUGIN_VERSION = '1.0.0';
-	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
+	const PLUGIN_VERSION = '2.0.1';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 
 	function register() {
 		$this->name = plugin_lang_get( 'title' );
@@ -96,31 +96,24 @@ class SourceHgWebPlugin extends MantisSourcePlugin {
 			$t_master_branch = 'default';
 		}
 ?>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'hgweb_root' ) ?></span></label>
-	<span class="input">
-		<input name="hgweb_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_hgweb_root ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'hgweb_project' ) ?></span></label>
-	<span class="input">
-		<input name="hgweb_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_hgweb_project ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'master_branch' ) ?></span></label>
-	<span class="input">
-		<input name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'hgweb_root' ) ?></td>
+	<td>
+		<input type="text" name="hgweb_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_hgweb_root ) ?>"/>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'hgweb_project' ) ?></td>
+	<td>
+		<input type="text" name="hgweb_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_hgweb_project ) ?>"/>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'master_branch' ) ?></td>
+	<td>
+		<input type="text" name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
+	</td>
+</tr>
 <?php
 	}
 
@@ -275,7 +268,7 @@ class SourceHgWebPlugin extends MantisSourcePlugin {
 
 			$t_changeset->author_email = empty($t_commit['author_email'])? '': $t_commit['author_email'];
 
-			preg_match_all('#diff[\s]*-r[\s]([^\s]*)[\s]*-r[\s]([^\s]*)[\s]([^\n]*)\n(Binary file[\s]([^\s]*)[\s]has changed|\-{3}[\s](/dev/null)?[^\t]*[^\n]*\n\+{3}[\s](/dev/null)?[^\t]*\t[^\n]*)#', $p_input, $t_matches, PREG_SET_ORDER);
+			preg_match_all('#diff[\s]*-r[\s]([^\s]*)[\s]*-r[\s]([^\s]*)[\s]([^\n]*)\n(Binary file[\s]([^\r\n\t\f\v]*)[\s]has changed|\-{3}[\s](/dev/null)?[^\t]*[^\n]*\n\+{3}[\s](/dev/null)?[^\t]*\t[^\n]*)#u', $p_input, $t_matches, PREG_SET_ORDER);
 
 			$t_commit['files'] = array();
 

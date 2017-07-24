@@ -16,8 +16,8 @@ if ( !defined('testing') ) {
 
 class SourceCgitPlugin extends MantisSourceGitBasePlugin {
 
-	const PLUGIN_VERSION = '1.1.0';
-	const FRAMEWORK_VERSION_REQUIRED = '1.5.0';
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
@@ -79,8 +79,8 @@ class SourceCgitPlugin extends MantisSourceGitBasePlugin {
 	}
 
 	public function update_repo_form( $p_repo ) {
-		$t_cgit_root     = null;
-		$t_cgit_project  = null;
+		$t_cgit_root = null;
+		$t_cgit_project = null;
 
 		if ( isset( $p_repo->info['cgit_root'] ) ) {
 			$t_cgit_root = $p_repo->info['cgit_root'];
@@ -96,31 +96,24 @@ class SourceCgitPlugin extends MantisSourceGitBasePlugin {
 			$t_master_branch = 'master';
 		}
 ?>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'cgit_root' ) ?></span></label>
-	<span class="input">
-		<input name="cgit_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_root ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'cgit_project' ) ?></span></label>
-	<span class="input">
-		<input name="cgit_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_project ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'master_branch' ) ?></span></label>
-	<span class="input">
-		<input name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'cgit_root' ) ?></td>
+	<td>
+		<input type="text" name="cgit_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_root ) ?>"/>
+	</td>
+</tr>
+	<tr>
+	<td class="category"><?php echo plugin_lang_get( 'cgit_project' ) ?></td>
+	<td>
+		<input type="text" name="cgit_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_cgit_project ) ?>"/>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'master_branch' ) ?></td>
+	<td>
+		<input type="text" name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
+	</td>
+</tr>
 <?php
 	}
 

@@ -11,8 +11,8 @@ require_once( config_get( 'core_path' ) . 'url_api.php' );
 
 class SourceGitphpPlugin extends MantisSourceGitBasePlugin {
 
-	const PLUGIN_VERSION = '1.1.0';
-	const FRAMEWORK_VERSION_REQUIRED = '1.5.0';
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
@@ -65,8 +65,8 @@ class SourceGitphpPlugin extends MantisSourceGitBasePlugin {
 	}
 
 	public function url_diff( $p_repo, $p_changeset, $p_file ) {
-		return $this->uri_base( $p_repo ) . 'a=blobdiff&f=' . $p_file->filename .	
-			'&h=' . $p_file->revision . '&hb=' . $p_changeset->revision . '&hp=' . $p_changeset->parent; 
+		return $this->uri_base( $p_repo ) . 'a=blobdiff&f=' . $p_file->filename .
+			'&h=' . $p_file->revision . '&hb=' . $p_changeset->revision . '&hp=' . $p_changeset->parent;
 	}
 
 	public function update_repo_form( $p_repo ) {
@@ -87,30 +87,24 @@ class SourceGitphpPlugin extends MantisSourceGitBasePlugin {
 			$t_master_branch = 'master';
 		}
 ?>
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'gitphp_root' ) ?></span></label>
-	<span class="input">
-		<input name="gitphp_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_gitphp_root ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'gitphp_project' ) ?></span></label>
-	<span class="input">
-		<input name="gitphp_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_gitphp_project ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'master_branch' ) ?></span></label>
-	<span class="input">
-		<input name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'gitphp_root' ) ?></td>
+	<td>
+		<input type="text" name="gitphp_root" maxlength="250" size="40" value="<?php echo string_attribute( $t_gitphp_root ) ?>"/>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'gitphp_project' ) ?></td>
+	<td>
+		<input type="text" name="gitphp_project" maxlength="250" size="40" value="<?php echo string_attribute( $t_gitphp_project ) ?>"/>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo plugin_lang_get( 'master_branch' ) ?></td>
+	<td>
+		<input type="text" name="master_branch" maxlength="250" size="40" value="<?php echo string_attribute( $t_master_branch ) ?>"/>
+	</td>
+</tr>
 <?php
 	}
 
@@ -265,7 +259,7 @@ class SourceGitphpPlugin extends MantisSourceGitBasePlugin {
 	private function commit_changeset( $p_repo, $p_input, $p_branch='' ) {
 
 		$t_input = str_replace( array("\r", "\n", '&lt;', '&gt;', '&nbsp;'), array('', '', '<', '>', ' '), $p_input );
-		
+
 		# Extract sections of commit data and changed files
 		$t_input_p1 = strpos( $t_input, '<div class="title">' );
 		$t_input_p2 = strpos( $t_input, '<div class="list_head">' );
@@ -282,36 +276,36 @@ class SourceGitphpPlugin extends MantisSourceGitBasePlugin {
 			$t_input_p1 = strpos( $t_input, '<tr class="light">' );
 			if ( false === $t_input_p1 ) {
 				$t_input_p1 = strpos( $t_input, '<tr class="dark">' );
-			} 
+			}
 		}
 
 		$t_input_p2 = strpos( $t_input, '<div class="page_footer">' );
-		
+
 		if ( false === $t_input_p1 || false === $t_input_p2 ) {
 			echo 'file data failure.';
 			var_dump( strlen( $t_input ), $t_input_p1, $t_input_p2 );
 			print_r($t_input);
 			die();
 		}
-		
+
 		$t_gitphp_files = substr( $t_input, $t_input_p1, $t_input_p2 - $t_input_p1 );
-		
-		
+
+
 		# Get commit revsion and make sure it's not a dupe
 		preg_match( '#<td class="monospace">([a-f0-9]*)#', $t_gitphp_data, $t_matches );
-		
+
 		$t_commit['revision'] = $t_matches[1];
-        
+
 		echo "processing $t_commit[revision] ... \n";
-	
+
 		if ( !SourceChangeset::exists( $p_repo->id, $t_commit['revision'] ) ) {
-			
+
 			# Parse for commit data
 			# m modifier means "make . include newlines"
 			# x modifier means "ignore whitespace"
 			preg_match( '#<td>author</td>.*?<td>(.*?)<.*?<time.*?>(.*?)<.*?<td>committer</td>.*?<td>(.*?)<.*<div.class="page_body">(.*?)</div>.*#mx',
 				$t_gitphp_data, $t_matches );
-			
+
 			$t_commit['author'] = $t_matches[1];
 			# gitphp doesn't parse email address for some reason?
 			$t_commit['author_email'] = "n/a";
@@ -321,7 +315,7 @@ class SourceGitphpPlugin extends MantisSourceGitBasePlugin {
 			$t_commit['message'] = trim( preg_replace( '#<br.*?>#', PHP_EOL, $t_matches[4] ) );
 
 			$t_parents = array();
-		
+
 			if ( preg_match_all( '#parent</td>.*?<td.class="monospace">.*?<a.*?>(.*?)<.*#mx', $t_gitphp_data, $t_matches ) ) {
 				foreach( $t_matches[1] as $t_match ) {
 					$t_parents[] = $t_commit['parent'] = $t_match;
@@ -337,13 +331,13 @@ class SourceGitphpPlugin extends MantisSourceGitBasePlugin {
 
 			# Parse for changed file data
 			$t_commit['files'] = array();
-			
+
 			preg_match_all( '#class="list".*?h=(\w*).*?f=(.*?)".*?<.a>#',
 				$t_gitphp_files, $t_matches, PREG_SET_ORDER );
-		
+
 			foreach( $t_matches as $t_file_matches ) {
 				$t_file = array();
-				$t_file['filename'] = str_replace('%2F', '/', $t_file_matches[2]);	
+				$t_file['filename'] = str_replace('%2F', '/', $t_file_matches[2]);
 				$t_file['revision'] = $t_file_matches[1];
 
 				if ( isset( $t_file_matches[3] ) ) {

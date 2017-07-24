@@ -19,14 +19,22 @@ $t_vcs = SourceVCS::repo( $t_repo );
 
 $t_repo->pre_stats = $t_repo->stats();
 
-html_page_top();
+layout_page_header( plugin_lang_get( 'title' ) );
+layout_page_begin();
 
 ?>
-<br/>
-<table class="width60" align="center">
+
+<div class="col-md-12 col-xs-12">
+	<div class="space-10"></div>
+
+<div class="widget-box widget-color-blue2">
+	<div class="widget-body">
+		<div class="widget-main no-padding">
+			<div class="table-responsive">
+<table class="table table-striped table-bordered table-condensed">
 
 <tr>
-<td class="" colspan="2"><?php echo plugin_lang_get( 'import_results' ) ?></td>
+	<td class="" colspan="2"><?php echo plugin_lang_get( 'import_results' ) ?></td>
 </tr>
 
 <?php
@@ -55,7 +63,7 @@ $t_repo->post_stats = $t_repo->stats();
 ?>
 
 <tr>
-<td class="category"><?php echo string_display_line( $t_repo->name ) ?></td>
+	<td class="category"><?php echo string_display_line( $t_repo->name ) ?></td>
 <td>
 <?php
 if ( $t_repo->import_error ) {
@@ -74,13 +82,13 @@ echo sprintf( plugin_lang_get( 'import_stats' ), $t_stats['changesets'], $t_stat
 
 <tr>
 <td colspan="2" class="center">
-<?php print_bracket_link( plugin_page( 'repo_manage_page' ) . '&id=' . $t_repo->id, plugin_lang_get( 'back_repo' ) ) ?>
+	<?php print_small_button( plugin_page( 'repo_manage_page' ) . '&id=' . $t_repo->id, plugin_lang_get( 'back_repo' ) ) ?>
 </td>
 </tr>
 
 </table>
-
+</div></div></div></div></div>
 <?php
-html_page_bottom();
+layout_page_end();
 form_security_purge( 'plugin_Source_repo_import_latest' );
 

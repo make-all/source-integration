@@ -16,6 +16,18 @@ class SourcePlugin extends MantisSourceBase {
 	const PLUGIN_VERSION = self::FRAMEWORK_VERSION;
 
 	/**
+	 * Error constants
+	 */
+	const ERROR_CHANGESET_MISSING_ID = 'changeset_missing_id';
+	const ERROR_CHANGESET_MISSING_REPO = 'changeset_missing_repo';
+	const ERROR_CHANGESET_INVALID_REPO = 'changeset_invalid_repo';
+	const ERROR_FILE_MISSING = 'file_missing';
+	const ERROR_FILE_INVALID_CHANGESET = 'file_invalid_changeset';
+	const ERROR_PRODUCTMATRIX_NOT_LOADED = 'productmatrix_not_loaded';
+	const ERROR_REPO_MISSING = 'repo_missing';
+	const ERROR_REPO_MISSING_CHANGESET = 'repo_missing_changeset';
+
+	/**
 	 * Changeset link matching pattern.
 	 * format: '<type>:<reponame>:<revision>:', where
 	 * <type> = link type, 'c' or 's' for changeset details, 'd' or 'v' for diff
@@ -111,6 +123,25 @@ class SourcePlugin extends MantisSourceBase {
 		plugin_child( 'SourceIntegration' );
 	}
 
+	function errors() {
+		$t_errors_list = array(
+			self::ERROR_CHANGESET_MISSING_ID,
+			self::ERROR_CHANGESET_MISSING_REPO,
+			self::ERROR_CHANGESET_INVALID_REPO,
+			self::ERROR_FILE_MISSING,
+			self::ERROR_FILE_INVALID_CHANGESET,
+			self::ERROR_PRODUCTMATRIX_NOT_LOADED,
+			self::ERROR_REPO_MISSING,
+			self::ERROR_REPO_MISSING_CHANGESET,
+		);
+
+		foreach( $t_errors_list as $t_error ) {
+			$t_errors[$t_error] = plugin_lang_get( 'error_' . $t_error );
+		}
+
+		return array_merge( parent::errors(), $t_errors );
+	}
+
 	/**
 	 * Register source integration plugins with the framework.
 	 */
@@ -139,21 +170,37 @@ class SourcePlugin extends MantisSourceBase {
 	}
 
 	function menu_main() {
-		$t_links = array();
+		$t_menu_options = array();
 
 		if ( plugin_config_get( 'show_repo_link' ) ) {
 			$t_page = plugin_page( 'index', false, 'Source' );
 			$t_lang = plugin_lang_get( 'repositories', 'Source' );
-			$t_links[] = "<a href=\"$t_page\">$t_lang</a>";
+
+			$t_menu_option = array(
+				'title' => $t_lang,
+				'url' => $t_page,
+				'access_level' => plugin_config_get( 'view_threshold' ),
+				'icon' => 'fa-code-fork'
+			);
+
+			$t_menu_options[] = $t_menu_option;
 		}
 
 		if ( plugin_config_get( 'show_search_link' ) ) {
 			$t_page = plugin_page( 'search_page', false, 'Source' );
 			$t_lang = plugin_lang_get( 'search', 'Source' );
-			$t_links[] = "<a href=\"$t_page\">$t_lang</a>";
+
+			$t_menu_option = array(
+				'title' => $t_lang,
+				'url' => $t_page,
+				'access_level' => plugin_config_get( 'view_threshold' ),
+				'icon' => 'fa-search'
+			);
+
+			$t_menu_options[] = $t_menu_option;
 		}
 
-		return $t_links;
+		return $t_menu_options;
 	}
 
 	function display_formatted( $p_event, $p_text, $p_multiline ) {

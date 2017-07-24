@@ -26,35 +26,46 @@ function Source_View_Changesets( $p_changesets, $p_repos=null, $p_show_repos=tru
 		$t_repo = $t_repos[ $t_changeset->repo_id ];
 		$t_vcs = SourceVCS::repo( $t_repo );
 
+		$t_changeset->load_bugs();
 		$t_changeset->load_files();
 
 		$t_author = Source_View_Author( $t_changeset, false );
 		$t_committer = Source_View_Committer( $t_changeset, false );
 		?>
 
-<tr class="row-1">
+<tr>
+
 <td class="category" width="25%" rowspan="<?php echo count( $t_changeset->files ) + 1 ?>">
-	<a name="changeset<?php echo $t_changeset->id ?>"><?php echo string_display(
+	<a id="<?php echo $t_changeset->revision; ?>"></a>
+	<p class="no-margin" name="changeset<?php echo $t_changeset->id ?>"><?php echo string_display(
 		( $p_show_repos ? $t_repo->name . ': ' : '' ) .
 		$t_vcs->show_changeset( $t_repo, $t_changeset )
-		) ?></a>
-	<br/><span class="small"><?php echo plugin_lang_get( 'timestamp', 'Source' ), ': ', string_display_line( $t_changeset->timestamp ) ?></span>
-	<br/><span class="small"><?php echo plugin_lang_get( 'author', 'Source' ), ': ', $t_author ?></span>
+		) ?></p>
+	<p class="no-margin small lighter">
+		<i class="fa fa-clock-o grey"></i> <?php echo string_display_line( $t_changeset->timestamp ) ?>
+	</p>
+	<p class="no-margin lighter">
+		<i class="fa fa-user grey"></i> <?php echo $t_author ?></a>
+	</p>
 	<?php if ( $t_committer && $t_committer != $t_author ) { ?><br/><span class="small"><?php echo plugin_lang_get( 'committer', 'Source' ), ': ', $t_committer ?></span><?php } ?>
 	<?php if ( $t_use_porting ) { ?>
-	<br/><span class="small"><?php echo plugin_lang_get( 'ported', 'Source' ), ': ',
+		<p class="no-margin small lighter"><?php echo plugin_lang_get( 'ported', 'Source' ), ': ',
 		( $t_changeset->ported ? string_display_line( $t_changeset->ported ) :
-			( is_null( $t_changeset->ported ) ? plugin_lang_get( 'pending', 'Source' ) : plugin_lang_get( 'na', 'Source' ) ) ) ?></span>
+			( is_null( $t_changeset->ported ) ? plugin_lang_get( 'pending', 'Source' ) : plugin_lang_get( 'na', 'Source' ) ) ) ?>
+		</p>
 	<?php } ?>
-	<br/><span class="small-links">
+		<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo plugin_page( 'view', false, 'Source' ) . '&id=' . $t_changeset->id ?>">
+			<?php echo plugin_lang_get( 'details', 'Source' ) ?>
+		</a>
 		<?php
-		print_bracket_link( plugin_page( 'view', false, 'Source' ) . '&id=' . $t_changeset->id, plugin_lang_get( 'details', 'Source' ) );
-		if ( $t_url = $t_vcs->url_changeset( $t_repo, $t_changeset ) ) {
-			print_bracket_link( $t_url, plugin_lang_get( 'diff', 'Source' ) );
-		}
+		if ( $t_url = $t_vcs->url_changeset( $t_repo, $t_changeset ) ) { ?>
+		<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo $t_url ?>">
+			<?php echo plugin_lang_get( 'diff', 'Source' ) ?>
+		</a>
+		<?php }
 		?>
 </td>
-<td colspan="3"><?php
+<td colspan="2"><?php
 	# The commit message is manually transformed (adding href, bug and bugnote
 	# links + nl2br) instead of calling string_display_links(), which avoids
 	# unwanted html tags processing by the MantisCoreFormatting plugin.
@@ -66,25 +77,54 @@ function Source_View_Changesets( $p_changesets, $p_repos=null, $p_show_repos=tru
 					string_insert_hrefs(
 						string_html_specialchars( $t_changeset->message )
 		) ) ) );
-?></td>
+	?>
+</td>
+<td>
+<?php
+		# Build list of related issues with link
+		$t_bugs = array_map( 'string_get_bug_view_link', $t_changeset->bugs );
+
+		if( $t_bugs ) {
+			echo '<span class="bold">',
+				plugin_lang_get( 'affected_issues' ),
+				'</span><br>';
+			echo '<span>', implode( ', ', $t_bugs ), '</span>';
+		} else {
+?>
+		<form action="<?php echo plugin_page( 'attach' )  ?>" method="post">
+			<?php echo form_security_field( 'plugin_Source_attach' ) ?>
+			<input type="hidden" name="id" value="<?php echo $t_changeset->id ?>"/>
+			<input type="hidden" name="redirect" value="<?php echo $t_changeset->revision ?>"/>
+			<?php echo plugin_lang_get( 'attach_to_issue' ) ?><br>
+			<input type="text" class="input-sm" name="bug_ids" size="12"/>
+			<input type="submit"
+				   class="btn btn-sm btn-primary btn-white btn-round"
+				   value="<?php echo plugin_lang_get( 'attach' ) ?>" />
+		</form>
+<?php
+		}
+?>
+</td>
 </tr>
 
 		<?php foreach ( $t_changeset->files as $t_file ) { ?>
-<tr class="row-2">
-<td class="small mono" colspan="2"><?php echo string_display_line( $t_vcs->show_file( $t_repo, $t_changeset, $t_file ) ) ?></td>
-<td class="center" width="12%"><span class="small-links">
+<tr>
+<td class="small" colspan="2"><?php echo string_display_line( $t_vcs->show_file( $t_repo, $t_changeset, $t_file ) ) ?></td>
+<td class="center" width="15%">
 		<?php
-		if ( $t_url = $t_vcs->url_diff( $t_repo, $t_changeset, $t_file ) ) {
-			print_bracket_link( $t_url, plugin_lang_get( 'diff', 'Source' ) );
-		}
-		if ( $t_url = $t_vcs->url_file( $t_repo, $t_changeset, $t_file ) ) {
-			print_bracket_link( $t_url, plugin_lang_get( 'file', 'Source' ) );
-		}
-		?>
-</span></td>
+		if ( $t_url = $t_vcs->url_diff( $t_repo, $t_changeset, $t_file ) ) { ?>
+			<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo $t_url ?>">
+				<?php echo plugin_lang_get( 'diff', 'Source' ) ?>
+			</a>
+		<?php }
+		if ( $t_url = $t_vcs->url_file( $t_repo, $t_changeset, $t_file ) ) { ?>
+			<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo $t_url ?>">
+				<?php echo plugin_lang_get( 'file', 'Source' ) ?>
+			</a>
+		<?php }
+		?></td>
 </tr>
 		<?php } ?>
-<tr class="spacer"></tr>
 		<?php
 	}
 }
@@ -167,8 +207,9 @@ function Source_View_Pagination( $p_link, $p_current, $p_count, $p_perpage = 25 
 				return '...';
 			} elseif( $p_page == $p_current ) {
 				return "<strong>$p_page</strong>";
-			} else {
-				return sprintf( '<a href="%s">%s</a>', $p_link . $p_page, $p_text );
+			} else { 
+				$page_button = '<a class="btn btn-xs btn-primary btn-white btn-round" href="'. $p_link . $p_page .'">'.$p_text.'</a>';
+				return $page_button;
 			}
 		};
 
@@ -193,9 +234,10 @@ function Source_View_Pagination( $p_link, $p_current, $p_count, $p_perpage = 25 
 			$t_page_set = range( 1, $t_pages );
 		}
 
-		if( $p_current > 1 ) {
-			echo $t_page_link( 1, lang_get( 'first' ) ), '&nbsp;&nbsp;';
-			echo $t_page_link( $p_current - 1, lang_get( 'prev' ) ), '&nbsp;&nbsp;';
+		if( $p_current > 1 ) { 
+			echo '&nbsp;', $t_page_link( 1, lang_get( 'first' ) );
+			echo '&nbsp;&nbsp;', $t_page_link( $p_current - 1, lang_get( 'prev' ) );
+			echo '&nbsp;&nbsp;';
 		}
 
 		$t_page_set = array_map( $t_page_link, $t_page_set );

@@ -14,8 +14,8 @@ $t_vcs = SourceVCS::repo( $t_repo );
 helper_ensure_confirmed( plugin_lang_get( 'ensure_import_full' ), plugin_lang_get( 'import_full' ) );
 helper_begin_long_process();
 
-html_page_top1();
-html_page_top2();
+layout_page_header( plugin_lang_get( 'title' ) );
+layout_page_begin();
 
 # create a new, temporary repo
 $t_new_repo = SourceRepo::load( $f_repo_id );
@@ -51,7 +51,7 @@ if ( $t_error ) {
 
 	echo '<br/><div class="center">';
 	echo plugin_lang_get( 'import_full_failed' ), '<br/>';
-	print_bracket_link( plugin_page( 'repo_manage_page' ) . '&id=' . $t_repo->id, plugin_lang_get( 'back_repo' ) );
+	print_small_button( plugin_page( 'repo_manage_page' ) . '&id=' . $t_repo->id, plugin_lang_get( 'back_repo' ) );
 	echo '</div>';
 
 # otherwise, rename and save the new repo, then delete the old
@@ -64,11 +64,11 @@ if ( $t_error ) {
 
 	echo '<br/><div class="center">';
 	echo sprintf( plugin_lang_get( 'import_stats' ), $t_stats['changesets'], $t_stats['files'], $t_stats['bugs'] ), '<br/>';
-	print_bracket_link( plugin_page( 'repo_manage_page' ) . '&id=' . $t_new_repo->id, plugin_lang_get( 'back_repo' ) );
+	print_small_button( plugin_page( 'repo_manage_page' ) . '&id=' . $t_new_repo->id, plugin_lang_get( 'back_repo' ) );
 	echo '</div>';
 }
 
 form_security_purge( 'plugin_Source_repo_import_full' );
 
-html_page_bottom1();
+layout_page_end();
 

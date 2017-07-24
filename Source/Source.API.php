@@ -10,6 +10,33 @@ require_once( 'MantisSourcePlugin.class.php' );
  * @author John Reese
  */
 
+if (!function_exists('plugin_lang_get_defaulted')) {
+	/**
+	 * Get a language string for the plugin.
+	 * - If found, return the appropriate string.
+	 * - If not found, no default supplied, return the supplied string as is.
+	 * - If not found, default supplied, return default.
+	 * Automatically prepends plugin_<basename> to the string requested.
+	 * @param string $p_name     Language string name.
+	 * @param string $p_default  The default value to return.
+	 * @param string $p_basename Plugin basename.
+	 * @return string Language string
+	 */
+	function plugin_lang_get_defaulted( $p_name, $p_default = null, $p_basename = null ) {
+		if( !is_null( $p_basename ) ) {
+			plugin_push_current( $p_basename );
+		}
+		$t_basename = plugin_get_current();
+		$t_name = 'plugin_' . $t_basename . '_' . $p_name;
+		$t_string = lang_get_defaulted( $t_name, $p_default );
+
+		if( !is_null( $p_basename ) ) {
+			plugin_pop_current();
+		}
+		return $t_string;
+	}
+}
+
 # branch mapping strategies
 define( 'SOURCE_EXPLICIT',		1 );
 define( 'SOURCE_NEAR',			2 );
@@ -54,7 +81,7 @@ function Source_PVM( $p_trigger_error=true ) {
 		if ( plugin_is_loaded( 'ProductMatrix' ) || !$p_trigger_error ) {
 			return true;
 		} else {
-			trigger_error( ERROR_GENERIC, ERROR );
+			plugin_error( SourcePlugin::ERROR_PRODUCTMATRIX_NOT_LOADED );
 		}
 	}
 	return false;
@@ -680,7 +707,8 @@ class SourceRepo {
 		$t_result = db_query( $t_query, array( (int) $p_id ) );
 
 		if ( db_num_rows( $t_result ) < 1 ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $p_id );
+			plugin_error( SourcePlugin::ERROR_REPO_MISSING );
 		}
 
 		$t_row = db_fetch_array( $t_result );
@@ -697,13 +725,15 @@ class SourceRepo {
 	 * @return SourceRepo Repo object
 	 */
 	static function load_from_name( $p_name ) {
+		$p_name = trim($p_name);
 		$t_repo_table = plugin_table( 'repository', 'Source' );
 
 		$t_query = "SELECT * FROM $t_repo_table WHERE name LIKE " . db_param();
-		$t_result = db_query( $t_query, array( trim($p_name) ) );
+		$t_result = db_query( $t_query, array( $p_name ) );
 
 		if ( db_num_rows( $t_result ) < 1 ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $p_name );
+			plugin_error( SourcePlugin::ERROR_REPO_MISSING );
 		}
 
 		$t_row = db_fetch_array( $t_result );
@@ -839,7 +869,8 @@ class SourceRepo {
 
 	static function ensure_exists( $p_id ) {
 		if ( !SourceRepo::exists( $p_id ) ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $p_id );
+			plugin_error( SourcePlugin::ERROR_REPO_MISSING );
 		}
 	}
 }
@@ -912,7 +943,8 @@ class SourceChangeset {
 	 */
 	function save() {
 		if ( 0 == $this->repo_id ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $this->id );
+			plugin_error( SourcePlugin::ERROR_CHANGESET_INVALID_REPO );
 		}
 
 		$t_changeset_table = plugin_table( 'changeset', 'Source' );
@@ -1103,7 +1135,8 @@ class SourceChangeset {
 		$t_result = db_query( $t_query, array( $p_id ) );
 
 		if ( db_num_rows( $t_result ) < 1 ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $p_id );
+			plugin_error( SourcePlugin::ERROR_CHANGESET_MISSING_ID );
 		}
 
 		$t_array = self::from_result( $t_result );
@@ -1124,7 +1157,8 @@ class SourceChangeset {
 		$t_result = db_query( $t_query, array( $p_repo->id, $p_revision ) );
 
 		if ( db_num_rows( $t_result ) < 1 ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $p_revision, $p_repo->name  );
+			plugin_error( SourcePlugin::ERROR_CHANGESET_MISSING_REPO );
 		}
 
 		$t_array = self::from_result( $t_result );
@@ -1246,7 +1280,8 @@ class SourceFile {
 
 	function save() {
 		if ( 0 == $this->change_id ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $this->id );
+			plugin_error( SourcePlugin::ERROR_FILE_INVALID_CHANGESET );
 		}
 
 		$t_file_table = plugin_table( 'file', 'Source' );
@@ -1271,7 +1306,8 @@ class SourceFile {
 		$t_result = db_query( $t_query, array( $p_id ) );
 
 		if ( db_num_rows( $t_result ) < 1 ) {
-			trigger_error( ERROR_GENERIC, ERROR );
+			error_parameters( $p_id );
+			plugin_error( SourcePlugin::ERROR_FILE_MISSING );
 		}
 
 		$t_row = db_fetch_array( $t_result );

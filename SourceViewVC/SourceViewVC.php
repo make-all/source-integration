@@ -10,9 +10,9 @@ if ( false === include_once( config_get( 'plugin_path' ) . 'SourceSVN/SourceSVN.
 
 class SourceViewVCPlugin extends SourceSVNPlugin {
 
-	const PLUGIN_VERSION = '1.0.0';
-	const FRAMEWORK_VERSION_REQUIRED = '1.3.2';
-	const SOURCESVN_VERSION_REQUIRED = '1.0';
+	const PLUGIN_VERSION = '2.0.0';
+	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
+	const SOURCESVN_VERSION_REQUIRED = '2.0.0';
 
 	public function register() {
 		$this->name = lang_get( 'plugin_SourceViewVC_title' );
@@ -141,39 +141,36 @@ class SourceViewVCPlugin extends SourceSVNPlugin {
 		$t_root_as_url  = $this->get_viewvc_root_as_url( $p_repo );
 
 ?>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'viewvc_url' ) ?></span></label>
-	<span class="input">
-		<input name="viewvc_url" maxlength="250" size="40" value="<?php echo string_attribute( $t_url ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'viewvc_name' ) ?></span></label>
-	<span class="input">
-		<input name="viewvc_name" maxlength="250" size="40" value="<?php echo string_attribute( $t_name ) ?>"/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'viewvc_root_as_url' ) ?></span></label>
-	<span class="input">
-		<input name="viewvc_root_as_url" type="checkbox" <?php echo ($t_root_as_url ? 'checked="checked"' : '') ?>/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
-<div class="field-container">
-	<label><span><?php echo plugin_lang_get( 'viewvc_use_checkout' ) ?></span></label>
-	<span class="input">
-		<input name="viewvc_use_checkout" type="checkbox" <?php echo ($t_use_checkout ? 'checked="checked"' : '') ?>/>
-	</span>
-	<span class="label-style"></span>
-</div>
-
+<tr>
+	<td class="category"><?php echo lang_get( 'plugin_SourceViewVC_viewvc_url' ) ?></td>
+	<td>
+		<input type="text" name="viewvc_url" maxlength="250" size="40" value="<?php echo string_attribute( $t_url ) ?>"/>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo lang_get( 'plugin_SourceViewVC_viewvc_name' ) ?></td>
+	<td>
+		<input type="text" name="viewvc_name" maxlength="250" size="40" value="<?php echo string_attribute( $t_name ) ?>"/>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo lang_get( 'plugin_SourceViewVC_viewvc_root_as_url' ) ?></td>
+	<td>
+		<label>
+			<input name="viewvc_root_as_url" type="checkbox" class="ace" <?php echo ($t_root_as_url ? 'checked="checked"' : '') ?>/>
+			<span class="lbl"></span>
+		</label>
+	</td>
+</tr>
+<tr>
+	<td class="category"><?php echo lang_get( 'plugin_SourceViewVC_viewvc_use_checkout' ) ?></td>
+	<td>
+		<label>
+			<input name="viewvc_use_checkout" type="checkbox" class="ace" <?php echo ($t_use_checkout ? 'checked="checked"' : '') ?>/>
+			<span class="lbl"></span>
+		</label>
+	</td>
+</tr>
 <?php
 
 		return parent::update_repo_form( $p_repo );

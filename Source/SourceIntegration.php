@@ -48,33 +48,31 @@ final class SourceIntegrationPlugin extends MantisSourceBase {
 		if ( count( $t_changesets ) < 1 ) {
 			return;
 		}
-
-		collapse_open( 'Source' );
-
 		?>
-<br/>
-<a name="changesets"/>
-<table class="width100" cellspacing="1">
-
-<tr>
-	<td class="form-title"><?php collapse_icon( 'Source' ); echo plugin_lang_get( 'related_changesets', 'Source' ) ?></td>
-</tr>
-		<?php Source_View_Changesets( $t_changesets ); ?>
-</table>
+		<div class="col-md-12 col-xs-12">
+			<div class="space-10"></div>
+			<div class="widget-box widget-color-blue2" id="changesets">
+				<div class="widget-header widget-header-small">
+					<h4 class="widget-title lighter">
+						<i class="ace-icon fa fa-file-code-o"></i>
+						<?php echo plugin_lang_get( 'related_changesets', 'Source' ) ?>
+					</h4>
+					<div class="widget-toolbar">
+						<a href="#" data-action="collapse">
+							<i class="1 ace-icon fa-chevron-down fa bigger-125"></i>
+						</a>
+					</div>
+				</div>
+				<div class="widget-body">
+					<div class="table-responsive">
+						<table class="table table-bordered table-striped table-condensed no-margin">
+							<?php Source_View_Changesets( $t_changesets ); ?>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 <?php
-			collapse_closed( 'Source' );
-?>
-<br/>
-<table class="width100" cellspacing="1">
-
-<tr>
-	<td class="form-title"><?php collapse_icon( 'Source' ); echo plugin_lang_get( 'related_changesets', 'Source' ) ?></td>
-</tr>
-
-</table>
-<?php
-
-		collapse_end( 'Source' );
 	} #display_bug
 
 	/**
@@ -90,12 +88,13 @@ final class SourceIntegrationPlugin extends MantisSourceBase {
 
 		$t_user = SourceUser::load( $p_user_id );
 
-		echo '<div class="field-container">'
-			. '<label for="Source_vcs_username"><span>' . plugin_lang_get( 'vcs_username', 'Source' ) . '</span></label>'
-			. '<span class="input"><input type="hidden" name="Source_vcs" value="1"/>'
-			. '<input name="Source_vcs_username" value="', $t_user->username, '"/></span>'
-			. '<span class="label-style"></span>'
-			. '</div>';
+		echo '<tr>'
+			. '<td class="category">' . plugin_lang_get( 'vcs_username', 'Source' ) . '</td>'
+			. '<td>'
+			. '<input type="hidden" name="Source_vcs" value="1"/>'
+			. '<input id="source-vcs-username" type="text" name="Source_vcs_username" class="input-sm" value="' . $t_user->username . '" />'
+			. '</td>'
+			. '</tr>';
 	}
 
 	/**

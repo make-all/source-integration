@@ -52,7 +52,12 @@ integration framework and API.
 ## Requirements
 
 The Source Integration framework requires [MantisBT](http://www.mantisbt.org/)
-version **1.3.0** or higher.
+version **2.0.1** or higher.
+
+Additionally, the _SourceBitBucket_ and _SourceGithub_ plugins
+require the [PHP Curl extension](http://php.net/book.curl), or the ability to
+execute system calls ([shell_exec](http://php.net/function.shell-exec)).
+
 
 ## Installation
 
@@ -68,10 +73,10 @@ Use [release tags](https://github.com/mantisbt-plugins/source-integration/releas
 or the relevant branch in the Plugin's GitHub repository, as per the table below:
 
 MantisBT version | Tags | Branch | Notes
-:---:|---|---|---
-2.0.x | v2.* | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream master
-1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | Tracking upstream master-1.3.x
-1.2.x | v0.* | [master-1.2.x](https://github.com/make-all/source-integration/archive/master.zip) | Legacy, tracking upstream master-1.2.x
+:---:|---|---
+2.x   | v2.* | [master](https://github.com/make-all/source-integration/archive/modern-ui.zip) | Tracking upstream master
+1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | Tracking upstream master-1.3.x - maintenance
+1.2.x | v0.* | [master-1.2.x](https://github.com/make-all/source-integration/archive/master-1.2.x.zip) | Legacy, upstream master-1.2.x - no longer supported
 
 master is tracking the latest tested version which is where the author will be maintaining the Phabricator backends. Currently this is 1.3.x. Pull requests are welcome for other branches, especially for newer branches.
 
