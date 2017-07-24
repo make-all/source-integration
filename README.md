@@ -74,9 +74,9 @@ or the relevant branch in the Plugin's GitHub repository, as per the table below
 
 MantisBT version | Tags | Branch | Notes
 :---:|---|---
-2.x   | v2.* | [modern-ui](https://github.com/make-all/source-integration/archive/modern-ui.zip) | ** Untested **, tracking upstream master
-1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | Tracking upstream master-1.3.x maintenance
-1.2.x | v0.* | [master-1.2.x](https://github.com/make-all/source-integration/archive/master-1.2.x.zip) | Legacy, upstream master-1.2.x no longer supported
+2.x   | v2.* | [master](https://github.com/make-all/source-integration/archive/modern-ui.zip) | Tracking upstream master
+1.3.x | v1.* | [master-1.3.x](https://github.com/make-all/source-integration/archive/master-1.3.x.zip) | Tracking upstream master-1.3.x - maintenance
+1.2.x | v0.* | [master-1.2.x](https://github.com/make-all/source-integration/archive/master-1.2.x.zip) | Legacy, upstream master-1.2.x - no longer supported
 
 
 ### Setup instructions
