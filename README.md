@@ -67,6 +67,8 @@ The Source Integration framework's version numbering follows
 [Semantic Versioning](http://semver.org/). Major version increments indicate a
 change in the minimum required MantisBT version.
 
+See the [Change log](docs/CHANGELOG.md) for detailed revision history.
+
 Depending on which version of MantisBT you are using, please make sure to
 get the appropriate version of the source code.
 Use [release tags](https://github.com/mantisbt-plugins/source-integration/releases),
@@ -120,6 +122,7 @@ master is tracking the latest tested version which is where the author will be m
 
     * [SourceGithub](docs/CONFIGURING.SourceGithub.md)
     * [SourceViewVC](docs/CONFIGURING.SourceViewVC.md)
+    * [SourceSVN](docs/CONFIGURING.SourceSVN.md)
 
 9. Once configured, click the "Return to Repository" link and click either
    the "Import Everything" or "Import Newest Data" button to perform initial
