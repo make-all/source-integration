@@ -8,11 +8,17 @@ specification.
 
 --------------------------------------------------------------------------------
 
-## [Unreleased 2.x]
-
---------------------------------------------------------------------------------
-
 # Releases for MantisBT 2.x
+
+## [2.1.2] - 2018-06-13
+
+Includes all changes and fixes from 1.5.5.
+
+### Fixed
+
+- HgWeb: prevent lockup and display warning when importing empty repository
+  [#269](https://github.com/mantisbt-plugins/source-integration/pull/269)
+
 
 ## [2.1.1] - 2018-04-09
 
@@ -138,6 +144,13 @@ Includes all changes and fixes from 1.5.0.
 --------------------------------------------------------------------------------
 
 # Releases for MantisBT 1.3
+
+## [1.5.6] - 2018-06-13
+
+### Fixed
+
+- GitLab: use API v4
+  [#270](https://github.com/mantisbt-plugins/source-integration/pull/270)
 
 ## [1.5.5] - 2018-04-09
 
@@ -332,9 +345,10 @@ Includes all changes and fixes from master-1.2.x branch, up to commit
 ## [0.9] - 2008-04-11
 
 
-[Unreleased 2.x]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.1...HEAD
-[Unreleased 1.x]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.5...master-1.3.x
+[Unreleased 2.x]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.2...HEAD
+[Unreleased 1.x]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.6...master-1.3.x
 
+[2.1.2]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/mantisbt-plugins/source-integration/compare/v2.0.3...v2.1.0
 [2.0.3]: https://github.com/mantisbt-plugins/source-integration/compare/v2.0.2...v2.0.3
@@ -344,6 +358,7 @@ Includes all changes and fixes from master-1.2.x branch, up to commit
 [2.0.0-beta.2]: https://github.com/mantisbt-plugins/source-integration/compare/v2.0.0-beta.1...v2.0.0-beta.2
 [2.0.0-beta.1]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.2...v2.0.0-beta.1
 
+[1.5.6]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.5...v1.5.6
 [1.5.5]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.2...v1.5.3
