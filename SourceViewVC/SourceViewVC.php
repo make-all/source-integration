@@ -10,7 +10,7 @@ if ( false === include_once( config_get( 'plugin_path' ) . 'SourceSVN/SourceSVN.
 
 class SourceViewVCPlugin extends SourceSVNPlugin {
 
-	const PLUGIN_VERSION = '2.0.0';
+	const PLUGIN_VERSION = '2.0.2';
 	const FRAMEWORK_VERSION_REQUIRED = '2.0.0';
 	const SOURCESVN_VERSION_REQUIRED = '2.0.0';
 
@@ -113,6 +113,7 @@ class SourceViewVCPlugin extends SourceSVNPlugin {
 
 		$t_opts = array();
 		$t_opts['revision'] = $t_revision;
+		$t_opts['pathrev'] = $t_revision;
 
 		if( !$t_use_checkout )
 		{
@@ -130,6 +131,7 @@ class SourceViewVCPlugin extends SourceSVNPlugin {
 		$t_opts = array();
 		$t_opts['r1'] = $p_changeset->revision;
 		$t_opts['r2'] = $p_changeset->revision - 1;
+		$t_opts['pathrev'] = $p_changeset->revision;
 
 		return $this->url_base( $p_repo, $p_file->filename, $t_opts );
 	}

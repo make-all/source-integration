@@ -121,6 +121,7 @@ master is tracking the latest tested version which is where the author will be m
    relevant plugin extension:
 
     * [SourceGithub](docs/CONFIGURING.SourceGithub.md)
+    * [SourceGitlab](SourceGitlab/README.md)
     * [SourceViewVC](docs/CONFIGURING.SourceViewVC.md)
     * [SourceSVN](docs/CONFIGURING.SourceSVN.md)
 
