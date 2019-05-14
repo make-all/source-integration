@@ -91,19 +91,19 @@ layout_page_begin();
 
 		<div class="widget-body">
 			<div class="widget-main no-padding">
+				<div class="widget-toolbox padding-8 clearfix">
+					<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo plugin_page( 'list' ) . "&id=$f_repo_id" ?>">
+						<?php echo plugin_lang_get( 'browse' ) ?>
+					</a>
+					<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo plugin_page( 'index' ) ?>">
+						<?php echo plugin_lang_get( 'back' ) ?>
+					</a>
+				</div>
 				<div class="table-responsive">
 
-					<div class="widget-toolbox padding-8 clearfix">
-						<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo plugin_page( 'list' ) . "&id=$f_repo_id" ?>">
-							<?php echo plugin_lang_get( 'browse' ) ?>
-						</a>
-						<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo plugin_page( 'index' ) ?>">
-							<?php echo plugin_lang_get( 'back' ) ?>
-						</a>
-					</div>
 	<table class="table table-bordered table-condensed">
 		<tr>
-			<td class="category" width="30%"><?php echo plugin_lang_get( 'name' ) ?></td>
+			<td class="category" width="35%"><?php echo plugin_lang_get( 'name' ) ?></td>
 			<td><?php echo string_display( $t_repo->name ) ?></td>
 		</tr>
 
@@ -132,9 +132,13 @@ layout_page_begin();
 			</div>
 			<div class="widget-toolbox padding-8 clearfix">
 				<div class="col-md-6 col-xs-12 no-padding">
-					<form action="<?php echo plugin_page( 'repo_update_page' ) . '&amp;id=' . $t_repo->id ?>" method="post" class="pull-left">
-						<input type="submit" class="btn btn-primary btn-white btn-sm btn-round" value="<?php echo plugin_lang_get( 'update_repository' ) ?>"/>
-					</form>
+					<?php
+					print_link_button(
+						plugin_page( 'repo_update_page' ) . '&id=' . $t_repo->id,
+						plugin_lang_get( 'update_repository' ),
+						'btn-sm pull-left'
+					);
+					?>
 					<form action="<?php echo plugin_page( 'repo_delete' ) . '&amp;id=' . $t_repo->id ?>" method="post" class="pull-left">
 						<?php echo form_security_field( 'plugin_Source_repo_delete' ) ?>
 						<input type="submit" class="btn btn-primary btn-white btn-sm btn-round" value="<?php echo plugin_lang_get( 'delete_repository' ) ?>"/>

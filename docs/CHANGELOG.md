@@ -10,9 +10,45 @@ specification.
 
 # Releases for MantisBT 2.x
 
+## [2.2.0] - 2019-03-26
+
+Includes all changes and fixes from [1.6.0](#160---2019-01-31) and [1.6.1](#161---2019-03-26).
+
+### Added
+
+- GitHub: Use AJAX to automate Webhook creation
+  [#302](https://github.com/mantisbt-plugins/source-integration/pull/302)
+- SVN: support SVN:Log revision property changes
+  [#305](https://github.com/mantisbt-plugins/source-integration/pull/305)
+
+### Changed
+
+- Avoid going back and forth between repository manage & update pages
+  [#297](https://github.com/mantisbt-plugins/source-integration/pull/297)
+- Give visual feedback that the repo was updated
+  [#298](https://github.com/mantisbt-plugins/source-integration/pull/298)
+- Adjust left column width on Update Repo page
+  [#299](https://github.com/mantisbt-plugins/source-integration/pull/299)
+- Do not use POST action on Manage Repo page Update button
+  [#300](https://github.com/mantisbt-plugins/source-integration/pull/300)
+- GitHub: adjust oauth authorization page for MantisBT 2.x UI
+  [#293](https://github.com/mantisbt-plugins/source-integration/pull/293)
+- GitHub: Use AJAX to revoke app token
+  [#303](https://github.com/mantisbt-plugins/source-integration/pull/303)
+- GitHub: improve documentation
+  [#304](https://github.com/mantisbt-plugins/source-integration/pull/304)
+
+### Fixed
+
+- Display problem on narrow screens in repo_update_page
+  [#296](https://github.com/mantisbt-plugins/source-integration/pull/296)
+- GitHub: token remains valid if Client ID or Secret change
+  [#301](https://github.com/mantisbt-plugins/source-integration/pull/301)
+
+
 ## [2.1.5] - 2018-09-02
 
-Includes all changes and fixes from 1.5.9.
+Includes all changes and fixes from [1.5.9](#159---2018-09-02).
 
 ### Fixed
 
@@ -27,7 +63,7 @@ Includes all changes and fixes from 1.5.9.
 
 ## [2.1.4] - 2018-08-30
 
-Includes all changes and fixes from 1.5.8.
+Includes all changes and fixes from [1.5.8](#158---2018-08-30).
 
 ### Changed
 
@@ -43,12 +79,12 @@ Includes all changes and fixes from 1.5.8.
 
 ## [2.1.3] - 2018-07-30
 
-Includes all changes and fixes from 1.5.7.
+Includes all changes and fixes from [1.5.7](#157---2018-07-30).
 
 
 ## [2.1.2] - 2018-06-13
 
-Includes all changes and fixes from 1.5.6.
+Includes all changes and fixes from [1.5.6](#156---2018-06-13).
 
 ### Fixed
 
@@ -58,7 +94,7 @@ Includes all changes and fixes from 1.5.6.
 
 ## [2.1.1] - 2018-04-09
 
-Includes all changes and fixes from 1.5.5.
+Includes all changes and fixes from [1.5.5](#155---2018-04-09).
 
 ### Changed
 
@@ -72,7 +108,7 @@ Includes all changes and fixes from 1.5.5.
 
 ## [2.1.0] - 2017-09-17
 
-Includes all changes and fixes from 1.5.3 and 1.5.4.
+Includes all changes and fixes from [1.5.3](#153---2017-06-12) and [1.5.4](#154---2017-09-17).
 
 ### Added
 
@@ -122,7 +158,7 @@ Includes all changes and fixes from 1.5.3 and 1.5.4.
 
 ## [2.0.2] - 2017-03-16
 
-Includes all changes and fixes from 1.5.2.
+Includes all changes and fixes from [1.5.2](#152---2017-03-16).
 
 ### Security
 
@@ -133,12 +169,12 @@ Includes all changes and fixes from 1.5.2.
 
 ## [2.0.1] - 2017-03-06
 
-Includes all changes and fixes from 1.5.1.
+Includes all changes and fixes from [1.5.1](#151---2017-03-06).
 
 
 ## [2.0.0] - 2017-03-06
 
-Includes all changes and fixes from 1.5.0.
+Includes all changes and fixes from [1.5.0](#150---2017-03-06).
 
 ### Fixed
 
@@ -181,6 +217,22 @@ Includes all changes and fixes from 1.5.0.
 
 # Releases for MantisBT 1.3
 
+## [1.6.1] - 2019-03-26
+
+### Fixed
+
+- CGit: replace invalid function map() by array_map()
+  [#306](https://github.com/mantisbt-plugins/source-integration/issues/306)
+
+## [1.6.0] - 2019-01-31
+
+### Changed
+
+- Github: adapt checkin following retirement of GitHub Services
+  [#292](https://github.com/mantisbt-plugins/source-integration/issues/292)
+- Github: support payload signature validation from webhook
+  [#295](https://github.com/mantisbt-plugins/source-integration/issues/295)
+
 ## [1.5.9] - 2018-09-02
 
 ### Security
@@ -192,7 +244,7 @@ Includes all changes and fixes from 1.5.0.
 
 ### Fixed
 
-- Remove usage of create_function(), deprecated in PHP 7.2 
+- Remove usage of create_function(), deprecated in PHP 7.2
   [#284](https://github.com/mantisbt-plugins/source-integration/issues/284)
 - ViewVC: fix links to moved/deleted files
   [#273](https://github.com/mantisbt-plugins/source-integration/issues/273)
@@ -405,9 +457,9 @@ Includes all changes and fixes from master-1.2.x branch, up to commit
 ## [0.9] - 2008-04-11
 
 
-[Unreleased 2.x]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.5...HEAD
-[Unreleased 1.x]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.9...master-1.3.x
+[Unreleased 2.x]: https://github.com/mantisbt-plugins/source-integration/compare/v2.2.0...HEAD
 
+[2.2.0]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.5...v2.2.0
 [2.1.5]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.4...v2.1.5
 [2.1.4]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.3...v2.1.4
 [2.1.3]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.2...v2.1.3
@@ -421,6 +473,10 @@ Includes all changes and fixes from master-1.2.x branch, up to commit
 [2.0.0-beta.2]: https://github.com/mantisbt-plugins/source-integration/compare/v2.0.0-beta.1...v2.0.0-beta.2
 [2.0.0-beta.1]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.2...v2.0.0-beta.1
 
+[Unreleased 1.x]: https://github.com/mantisbt-plugins/source-integration/compare/v1.6.1...master-1.3.x
+
+[1.6.1]: https://github.com/mantisbt-plugins/source-integration/compare/v1.6.0...v1.6.1
+[1.6.0]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.9...v1.6.0
 [1.5.9]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.8...v1.5.9
 [1.5.8]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.7...v1.5.8
 [1.5.7]: https://github.com/mantisbt-plugins/source-integration/compare/v1.5.6...v1.5.7
