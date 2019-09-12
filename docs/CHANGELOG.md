@@ -10,6 +10,13 @@ specification.
 
 # Releases for MantisBT 2.x
 
+## [2.3.0] - 2019-09-06
+
+### Fixed
+
+- Support for BitBucket API 2.0
+  [#320](https://github.com/mantisbt-plugins/source-integration/issues/320)
+
 ## [2.2.0] - 2019-03-26
 
 Includes all changes and fixes from [1.6.0](#160---2019-01-31) and [1.6.1](#161---2019-03-26).
@@ -457,8 +464,9 @@ Includes all changes and fixes from master-1.2.x branch, up to commit
 ## [0.9] - 2008-04-11
 
 
-[Unreleased 2.x]: https://github.com/mantisbt-plugins/source-integration/compare/v2.2.0...HEAD
+[Unreleased 2.x]: https://github.com/mantisbt-plugins/source-integration/compare/v2.3.0...HEAD
 
+[2.3.0]: https://github.com/mantisbt-plugins/source-integration/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.5...v2.2.0
 [2.1.5]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.4...v2.1.5
 [2.1.4]: https://github.com/mantisbt-plugins/source-integration/compare/v2.1.3...v2.1.4
