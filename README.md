@@ -3,7 +3,7 @@
 [![Gitter](https://img.shields.io/gitter/room/mantisbt-plugins/source-integration.svg)](https://gitter.im/mantisbt-plugins/source-integration)
 
 Copyright (c) 2008 - 2012  John Reese - http://noswap.com  
-Copyright (c) 2012 - 2017  MantisBT Team - mantisbt-dev@lists.sourceforge.net
+Copyright (c) 2012 - 2020  MantisBT Team - mantisbt-dev@lists.sourceforge.net
 Copyright (c) 2014 - 2017  The Maker - https://github.com/make-all
 
 Released under the [MIT license](http://opensource.org/licenses/MIT)
@@ -40,6 +40,9 @@ plugins:
 * **SourceSVN**: SVN repositories locally accessible by the SVN binaries.
 * **SourceViewVC**: SVN repositories accessible via a
   [ViewVC](http://www.viewvc.org/) web frontend installation.
+* **SourceVisualSVNServer**: SVN repositories hosted on a 
+  [VisualSVN Server](https://www.visualsvn.com/server/) installation,
+  with support for URL linking from MantisBT to VisualSVN Server's built-in web frontend.
 * **SourceWebSVN**: SVN repositories accessible via a
   [WebSVN](http://www.websvn.info/) web frontend installation.
 * **SourcePhabricatorSVN**: SVN repositories accessible via a
@@ -51,12 +54,19 @@ integration framework and API.
 
 ## Requirements
 
-The Source Integration framework requires [MantisBT](http://www.mantisbt.org/)
-version **2.0.1** or higher.
+The Source Integration framework requires **[MantisBT](http://www.mantisbt.org/)
+version 2.0.1** or higher.
 
-Additionally, the _SourceBitBucket_ and _SourceGithub_ plugins
-require the [PHP Curl extension](http://php.net/book.curl), or the ability to
-execute system calls ([shell_exec](http://php.net/function.shell-exec)).
+### VCS plugins
+
+Some VCS plugins have additional, specific requirements:
+
+- **SourceBitBucket** requires the 
+  [PHP Curl extension](http://php.net/book.curl), or the ability to execute  
+  system calls (via [shell_exec](http://php.net/function.shell-exec)).
+- Starting with version 2.2.0 (bundled with Source Integration 2.4.0), 
+  **SourceGithub**  relies on [Guzzle](http://guzzlephp.org/) to access the 
+  GitHub API, and therefore requires **MantisBT 2.5.0** or later.
 
 
 ## Installation
@@ -124,6 +134,7 @@ master is tracking the latest tested version which is where the author will be m
     * [SourceGitlab](SourceGitlab/README.md)
     * [SourceViewVC](docs/CONFIGURING.SourceViewVC.md)
     * [SourceSVN](docs/CONFIGURING.SourceSVN.md)
+    * [SourceVisualSVNServer](docs/CONFIGURING.SourceVisualSVNServer.md)
 
 9. Once configured, click the "Return to Repository" link and click either
    the "Import Everything" or "Import Newest Data" button to perform initial
@@ -147,7 +158,16 @@ master is tracking the latest tested version which is where the author will be m
 
     This will import new changesets for all configured repositories.
 
-11. Add additional repositories as needed.
+11. You can also configure event-driven import of new changesets. Many source control 
+    systems support configurable hooks or triggers which can be used to notify the 
+    **Source** plugin that new commits or revisions are available for import. This 
+    improves user experience by eliminating delays between source control commits and 
+    MantisBT state updates.
+
+    Refer to the configuration documentation for the relevant plugin extension(s) for more 
+    information.
+
+12. Add additional repositories as needed.
 
 ## Support
 

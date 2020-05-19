@@ -10,13 +10,39 @@ specification.
 
 # Releases for MantisBT 2.x
 
+## [Unreleased 2.x]
+
+### Added
+
+- Support for VisualSVN Server, thanks to David Hopkins, FBR Ltd
+  [#313](https://github.com/mantisbt-plugins/source-integration/pull/313)
+- Default primary branch can be configured for git-based repositories 
+  [#308](https://github.com/mantisbt-plugins/source-integration/issues/308)
+
+### Changed
+
+- GitHub: use GuzzleHttp instead of cURL
+  [#336](https://github.com/mantisbt-plugins/source-integration/issues/336)
+- SVN: improve documentation
+  [#311](https://github.com/mantisbt-plugins/source-integration/pull/311)
+
+### Fixed
+
+- GitHub: allow processing more than 30 branches 
+  [#327](https://github.com/mantisbt-plugins/source-integration/issues/327)
+- GitHub: authentication using query parameters is deprecated 
+  [#335](https://github.com/mantisbt-plugins/source-integration/issues/335)
+- SVN: Workaround to avoid data import failures due to timeout reading proc_open() buffers
+  [#333](https://github.com/mantisbt-plugins/source-integration/issues/333)
+
+
 ## [2.3.1] - 2020-02-13
 
-Includes all changes and fixes from [1.6.1](#161---2020-02-13).
+Includes all changes and fixes from [1.6.2](#162---2020-02-13).
 
 ### Security
 
-- Fix XSS in Delete Repository page (CVE request pending)
+- Fix XSS in Delete Repository page (CVE-2020-8981)
   [#338](https://github.com/mantisbt-plugins/source-integration/issues/338)
 
 
@@ -26,6 +52,7 @@ Includes all changes and fixes from [1.6.1](#161---2020-02-13).
 
 - Support for BitBucket API 2.0
   [#320](https://github.com/mantisbt-plugins/source-integration/issues/320)
+
 
 ## [2.2.0] - 2019-03-26
 
@@ -238,7 +265,7 @@ Includes all changes and fixes from [1.5.0](#150---2017-03-06).
 
 ### Security
 
-- Fix XSS in Delete Repository page (CVE request pending)
+- Fix XSS in Delete Repository page (CVE-2020-8981)
   [#338](https://github.com/mantisbt-plugins/source-integration/issues/338)
 
 

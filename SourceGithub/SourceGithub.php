@@ -3,6 +3,8 @@
 # Copyright (c) 2012 John Reese
 # Licensed under the MIT license
 
+use GuzzleHttp\RequestOptions;
+
 if ( false === include_once( config_get( 'plugin_path' ) . 'Source/MantisSourceGitBasePlugin.class.php' ) ) {
 	return;
 }
@@ -11,11 +13,19 @@ require_once( config_get( 'core_path' ) . 'json_api.php' );
 
 class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 
-	const PLUGIN_VERSION = '2.1.0';
+	const PLUGIN_VERSION = '2.2.0';
 	const FRAMEWORK_VERSION_REQUIRED = '2.2.0';
-	const MANTIS_VERSION = '2.3.0';
+	const MANTIS_VERSION = '2.5.0';
+
+	const URL_API = 'https://api.github.com/';
+	const URL_OAUTH = 'https://github.com/login/oauth/';
 
 	public $linkPullRequest = '/pull/%s';
+
+	/**
+	 * @var \GuzzleHttp\Client
+	 */
+	private $githubApi;
 
 	public function register() {
 		$this->name = plugin_lang_get( 'title' );
@@ -133,21 +143,18 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 			. '&api_key=' . plugin_config_get( 'api_key' );
 
 		# Retrieve existing webhooks
+		$t_api_uri = "repos/$t_username/$t_reponame/hooks";
 		try {
-			$t_github_api = new \GuzzleHttp\Client();
-			$t_api_uri = SourceGithubPlugin::api_uri( $t_repo, "repos/$t_username/$t_reponame/hooks" );
-
-			$t_response = $t_github_api->get( $t_api_uri );
+			$t_hooks = $this->api_json_url( $t_repo, $t_api_uri );
 		}
 		catch( GuzzleHttp\Exception\ClientException $e ) {
 			return $e->getResponse();
 		}
-		$t_hooks = json_decode( (string) $t_response->getBody() );
 
 		# Determine if there is already a webhook attached to the plugin's payload URL
 		$t_id = false;
 		foreach( $t_hooks as $t_hook ) {
-			if(   $t_hook->name == 'web' && $t_hook->config->url == $t_payload_url ) {
+			if( $t_hook->name == 'web' && $t_hook->config->url == $t_payload_url ) {
 				$t_id = $t_hook->id;
 				break;
 			}
@@ -174,7 +181,8 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 				)
 			);
 
-			$t_github_response = $t_github_api->post( $t_api_uri,
+			$t_github_response = $this->githubApi->post(
+				$t_api_uri,
 				array( GuzzleHttp\RequestOptions::JSON => $t_payload )
 			);
 		}
@@ -280,7 +288,7 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 		if ( isset( $p_repo->info['master_branch'] ) ) {
 			$t_master_branch = $p_repo->info['master_branch'];
 		} else {
-			$t_master_branch = 'master';
+			$t_master_branch = $this->get_default_primary_branches();
 		}
 ?>
 
@@ -408,17 +416,84 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 		return $p_repo;
 	}
 
-	private function api_uri( $p_repo, $p_path ) {
-		$t_uri = 'https://api.github.com/' . $p_path;
+	/**
+	 * Initialize GitHub API for the given Repository.
+	 *
+	 * @param SourceRepo $p_repo Repository
+	 */
+	private function api_init( $p_repo ) {
+		# Initialize Guzzle client if not done already
+		if( !$this->githubApi ) {
+			$t_options = array(
+				'base_uri' => self::URL_API
+			);
 
-		if( isset( $p_repo->info['hub_app_access_token'] ) ) {
-			$t_access_token = $p_repo->info['hub_app_access_token'];
-			if ( !is_blank( $t_access_token ) ) {
-				$t_uri .= '?access_token=' . $t_access_token;
+			# Set the Authorization header
+			if( isset( $p_repo->info['hub_app_access_token'] ) ) {
+				$t_access_token = $p_repo->info['hub_app_access_token'];
+				if ( !is_blank( $t_access_token ) ) {
+					$t_options[RequestOptions::HEADERS] = array(
+						'Authorization' => 'token ' . $t_access_token,
+					);
+				}
 			}
-		}
 
-		return $t_uri;
+			$this->githubApi = new GuzzleHttp\Client( $t_options );
+		}
+		return $this->githubApi;
+	}
+
+	/**
+	 * Retrieves data from the GitHub API for the given repository.
+	 *
+	 * The JSON data is returned as an stdClass object.
+	 *
+	 * @param SourceRepo $p_repo   Repository
+	 * @param string     $p_path   GitHub API path
+	 * @param string     $p_member Optional top-level member to retrieve
+	 *
+	 * @return stdClass|stdClass[]|false
+	 */
+	 private function api_get( $p_repo, $p_path, $p_member = '' ) {
+		$this->api_init( $p_repo );
+		$t_json = array();
+
+ 		# Add pagination parameter, setting page count to maximum authorized by
+		# GitHub to minimize the number of requests
+		$t_path = $p_path
+			. ( parse_url( $p_path, PHP_URL_QUERY ) ? '&' : '?' )
+			. 'per_page=100';
+		do {
+			$t_response = $this->githubApi->get( $t_path );
+			$t_data = json_decode( $t_response->getBody() );
+
+			# No need for pagination if returned data is a single object
+			if( !is_array( $t_data ) ) {
+				$t_json = $t_data;
+				break;
+			}
+			# Store retrieved data and proceed with next page
+			$t_json = array_merge( $t_json, $t_data );
+
+			$t_links = GuzzleHttp\Psr7\parse_header( $t_response->getHeader( 'Link' ) );
+			foreach( $t_links as $t_link ) {
+				if( $t_link['rel'] == 'next' ) {
+					$t_path = trim( $t_link[0], '<>' );
+					continue 2;
+				}
+			}
+
+			# There is no "next" link - all pages have been processed
+			break;
+		} while( true );
+
+		if( empty( $p_member ) ) {
+			return $t_json;
+		} elseif( property_exists( $t_json, $p_member ) ) {
+			return $t_json->$p_member;
+		} else {
+			return false;
+		}
 	}
 
 	private function api_json_url( $p_repo, $p_url, $p_member = null ) {
@@ -429,8 +504,7 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 			$t_start_time = microtime( true );
 		}
 
-		$t_uri = $this->api_uri( $p_repo, 'rate_limit' );
-		$t_json = json_url( $t_uri, 'rate' );
+		$t_json = $this->api_get( $p_repo, 'rate_limit', 'rate' );
 
 		if ( false !== $t_json && !is_null( $t_json ) ) {
 			if ( $t_json->remaining <= 0 ) {
@@ -442,7 +516,7 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 			}
 		}
 
-		return json_url( $p_url, $p_member );
+		return $this->api_get( $p_repo, $p_url, $p_member );
 	}
 
 	public function precommit() {
@@ -525,7 +599,7 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 
 		$t_branch = $p_repo->info['master_branch'];
 		if ( is_blank( $t_branch ) ) {
-			$t_branch = 'master';
+			$t_branch = $this->get_default_primary_branches();
 		}
 
 		if ($t_branch != '*')
@@ -538,12 +612,10 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 			$t_username = $p_repo->info['hub_username'];
 			$t_reponame = $p_repo->info['hub_reponame'];
 
-			$t_uri = $this->api_uri( $p_repo, "repos/$t_username/$t_reponame/branches" );
-			$t_json = $this->api_json_url( $p_repo, $t_uri );
+			$t_json = $this->api_json_url( $p_repo, "repos/$t_username/$t_reponame/branches?per_page=" );
 
 			$t_branches = array();
-			foreach ($t_json as $t_branch)
-			{
+			foreach ($t_json as $t_branch) {
 				$t_branches[] = $t_branch->name;
 			}
 		}
@@ -599,8 +671,7 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 			$t_commit_id = array_shift( $s_parents );
 
 			echo "Retrieving $t_commit_id ... ";
-			$t_uri = $this->api_uri( $p_repo, "repos/$t_username/$t_reponame/commits/$t_commit_id" );
-			$t_json = $this->api_json_url( $p_repo, $t_uri );
+			$t_json = $this->api_json_url( $p_repo, "repos/$t_username/$t_reponame/commits/$t_commit_id" );
 
 			if ( false === $t_json || is_null( $t_json ) ) {
 				# Some error occured retrieving the commit
@@ -676,6 +747,12 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 		}
 	}
 
+	/**
+	 * Return the GitHub OAuth URL for the given repository
+	 *
+	 * @param SourceRepo $p_repo
+	 * @return string
+	 */
 	private function oauth_authorize_uri( $p_repo ) {
 		$t_hub_app_client_id = null;
 		$t_hub_app_secret = null;
@@ -699,7 +776,7 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 				'scope' => 'repo',
 				'allow_signup' => false,
 			);
-			return 'https://github.com/login/oauth/authorize?' . http_build_query( $t_param );
+			return self::URL_OAUTH . 'authorize?' . http_build_query( $t_param );
 		} else {
 			return '';
 		}
@@ -707,11 +784,12 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 
 	public static function oauth_get_access_token( $p_repo, $p_code ) {
 		# build the GitHub URL & POST data
-		$t_url = 'https://github.com/login/oauth/access_token';
-		$t_post_data = array( 'client_id' => $p_repo->info['hub_app_client_id'],
+		$t_post_data = array(
+			'client_id' => $p_repo->info['hub_app_client_id'],
 			'client_secret' => $p_repo->info['hub_app_secret'],
-			'code' => $p_code );
-		$t_data = self::url_post( $t_url, $t_post_data );
+			'code' => $p_code
+		);
+		$t_data = self::url_post( self::URL_OAUTH . 'access_token', $t_post_data );
 
 		$t_access_token = '';
 		if ( !empty( $t_data ) ) {
@@ -735,26 +813,22 @@ class SourceGithubPlugin extends MantisSourceGitBasePlugin {
 		}
 	}
 
+	/**
+	 * Sends a POST request.
+	 *
+	 * @param string $p_url       Target URL
+	 * @param array  $p_post_data Post data
+	 *
+	 * @return string Response
+	 */
 	public static function url_post( $p_url, $p_post_data ) {
-		$t_post_data = http_build_query( $p_post_data );
-
-		# Use the PHP cURL extension
-		if( function_exists( 'curl_init' ) ) {
-			$t_curl = curl_init( $p_url );
-			curl_setopt( $t_curl, CURLOPT_RETURNTRANSFER, true );
-			curl_setopt( $t_curl, CURLOPT_POST, true );
-			curl_setopt( $t_curl, CURLOPT_POSTFIELDS, $t_post_data );
-
-			$t_data = curl_exec( $t_curl );
-			curl_close( $t_curl );
-
-			return $t_data;
-		} else {
-			# Last resort system call
-			$t_url = escapeshellarg( $p_url );
-			$t_post_data = escapeshellarg( $t_post_data );
-			return shell_exec( 'curl ' . $t_url . ' -d ' . $t_post_data );
-		}
+		$t_request = new GuzzleHttp\Client();
+		$t_response = $t_request->post(
+			$p_url,
+			array(
+				'form_params' => $p_post_data,
+			)
+		);
+		return (string)$t_response->getBody();
 	}
-
 }
